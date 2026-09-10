@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, Clock, MapPin, CheckCircle, XCircle, Search, Video } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import AppointmentTypeSelector from '../../components/patient/AppointmentTypeSelector';
 
 const demoAppointments = [
   { id: 1, doctor: 'Dr. Ananya Sharma', specialization: 'Cardiology', hospital: 'GMC & Rajindra Hospital, Patiala', date: 'Today', time: '10:30 AM', status: 'confirmed', type: 'Online Teleconsultation', isOnline: true },
@@ -40,11 +41,15 @@ export default function AppointmentsPage() {
 
   return (
     <div className="animate-fade-in">
-      <div className="page-header">
+      <div className="page-header" style={{ marginBottom: '20px' }}>
         <h1>Appointments</h1>
         <p>View and manage your appointments.</p>
       </div>
-      <div className="tabs">
+
+      {/* Premium "How would you like to book?" Selection Component */}
+      <AppointmentTypeSelector />
+
+      <div className="tabs" style={{ marginTop: '36px' }}>
         <button className={`tab ${tab === 'upcoming' ? 'active' : ''}`} onClick={() => setTab('upcoming')}>Upcoming</button>
         <button className={`tab ${tab === 'past' ? 'active' : ''}`} onClick={() => setTab('past')}>Past</button>
       </div>
