@@ -25,6 +25,7 @@ import NotificationsPage from './pages/patient/NotificationsPage';
 import ProfilePage from './pages/patient/ProfilePage';
 import OnlineConsultation from './pages/patient/OnlineConsultation';
 import ComplaintsPage from './pages/patient/ComplaintsPage';
+import PatientPortal from './pages/patient/PatientPortal';
 
 // Doctor Pages
 import DoctorDashboard from './pages/doctor/DoctorDashboard';
@@ -55,6 +56,7 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/book-appointment" element={<Navigate to="/patient" replace />} />
       <Route path="/complaints" element={<Navigate to="/patient/complaints" replace />} />
+      <Route path="/portal" element={<Navigate to="/patient/portal" replace />} />
       <Route path="/signup" element={<PatientSignupPage />} />
       <Route path="/patient/signup" element={<PatientSignupPage />} />
       <Route path="/effects" element={<DashboardLayout />}>
@@ -64,6 +66,7 @@ export default function App() {
       {/* Patient Portal Routes */}
       <Route path="/patient" element={<DashboardLayout />}>
         <Route index element={<PatientDashboard />} />
+        <Route path="portal" element={<PatientPortal />} />
         <Route path="hospitals" element={<HospitalSearch />} />
         <Route path="hospitals/compare" element={<HospitalCompare />} />
         <Route path="hospitals/:id" element={<HospitalDetail />} />

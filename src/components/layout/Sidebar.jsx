@@ -15,6 +15,7 @@ const navGroups = {
       group: 'PATIENT CARE',
       items: [
         { path: '/patient', icon: LayoutDashboard, label: 'Overview', end: true },
+        { path: '/patient/portal', icon: ShieldCheck, label: 'Health ID Portal' },
         { path: '/patient/hospitals', icon: Building2, label: 'Find Hospital' },
         { path: '/patient/appointments', icon: Calendar, label: 'Appointments' },
         { path: '/patient/consultation', icon: Video, label: 'Online Consult' },
