@@ -316,79 +316,6 @@
   transform: translateY(-1px);
 }
 
-/* Demo Credentials Helper Box */
-.demo-credentials-box {
-  margin-top: 22px;
-  padding: 14px;
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px dashed rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
-}
-
-.demo-box-header {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #94a3b8;
-  margin-bottom: 10px;
-}
-
-.demo-chips-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-
-.demo-chip {
-  padding: 8px 6px;
-  border-radius: 8px;
-  background: rgba(30, 41, 59, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #ffffff;
-  cursor: pointer;
-  text-align: center;
-  transition: all 0.2s ease;
-}
-
-.demo-chip:hover {
-  background: rgba(5, 150, 105, 0.2);
-  border-color: #059669;
-  transform: translateY(-1px);
-}
-
-.demo-chip.active {
-  background: rgba(5, 150, 105, 0.25);
-  border-color: #10b981;
-}
-
-.demo-chip-name {
-  font-size: 12px;
-  font-weight: 800;
-  color: #34d399;
-}
-
-.demo-chip-pass {
-  font-size: 10px;
-  color: #94a3b8;
-  font-family: monospace;
-  margin-top: 2px;
-}
-
-.demo-hint-text {
-  font-size: 11px;
-  color: #64748b;
-  margin: 10px 0 0;
-  text-align: center;
-}
-
-.demo-hint-text strong {
-  color: #cbd5e1;
-}
-
 /* Patient Shortcut Footer */
 .patient-shortcut-footer {
   margin-top: 20px;
@@ -431,8 +358,5 @@
   }
   .staff-login-card {
     padding: 20px 16px;
-  }
-  .demo-chips-grid {
-    grid-template-columns: 1fr;
   }
 }

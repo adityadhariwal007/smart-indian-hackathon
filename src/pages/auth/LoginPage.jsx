@@ -13,11 +13,8 @@ import {
   CheckCircle2, 
   AlertCircle, 
   Eye, 
-  EyeOff, 
-  KeyRound,
-  Sparkles
+  EyeOff
 } from 'lucide-react';
-import { AUTH_ACCOUNTS } from '../../config/authCredentials';
 import './LoginPage.css';
 
 export default function LoginPage() {
@@ -79,13 +76,6 @@ export default function LoginPage() {
         navigate(`/${selectedRole}`, { replace: true });
       }
     }, 400);
-  };
-
-  // Quick Autofill helper for Demo / Hackathon Judges
-  const handleAutofill = (acc) => {
-    setUsername(acc.username);
-    setPassword(acc.password);
-    setErrorMessage('');
   };
 
   return (
@@ -237,31 +227,6 @@ export default function LoginPage() {
               )}
             </button>
           </form>
-
-          {/* Demo Credentials Quick-Select Accordion (for Judges / Evaluation) */}
-          <div className="demo-credentials-box">
-            <div className="demo-box-header">
-              <KeyRound size={14} className="text-emerald-400" />
-              <span>Demo Accounts (Click to Autofill)</span>
-            </div>
-            <div className="demo-chips-grid">
-              {AUTH_ACCOUNTS.map((acc) => (
-                <button
-                  key={acc.username}
-                  type="button"
-                  onClick={() => handleAutofill(acc)}
-                  className={`demo-chip ${username.toLowerCase() === acc.username.toLowerCase() ? 'active' : ''}`}
-                  title={`Autofill credentials for ${acc.name}`}
-                >
-                  <div className="demo-chip-name">{acc.username}</div>
-                  <div className="demo-chip-pass">{acc.password}</div>
-                </button>
-              ))}
-            </div>
-            <p className="demo-hint-text">
-              Each user can log in as either <strong>Doctor</strong> (→ /doctor) or <strong>Admin</strong> (→ /admin).
-            </p>
-          </div>
         </div>
 
         {/* Patient Portal Guest Link */}
