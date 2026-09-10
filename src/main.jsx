@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 import { LocationProvider } from './context/LocationContext';
+import { LanguageProvider } from './context/LanguageContext';
 import App from './App';
 import './index.css';
 import 'leaflet/dist/leaflet.css';
@@ -16,7 +17,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <AuthProvider>
           <NotificationProvider>
             <LocationProvider>
-              <App />
+              <LanguageProvider>
+                <App />
+              </LanguageProvider>
             </LocationProvider>
           </NotificationProvider>
         </AuthProvider>

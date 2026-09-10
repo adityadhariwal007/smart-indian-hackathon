@@ -2,19 +2,22 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Bell, AlertTriangle, Search, HeartPulse, Sparkles } from 'lucide-react';
 import { useNotifications } from '../../context/NotificationContext';
+import { useLanguage } from '../../context/LanguageContext';
+import LanguageToggle from '../common/LanguageToggle';
 import './Header.css';
 
 export default function Header() {
   const { user, switchRole } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
 
   if (!user) return null;
 
   const roleLabels = {
-    patient: 'Patient Portal',
-    doctor: 'Doctor Portal',
-    admin: 'Admin Portal',
+    patient: t('patientPortal'),
+    doctor: t('doctorPortal'),
+    admin: t('adminPortal'),
   };
 
   return (
@@ -28,6 +31,8 @@ export default function Header() {
       </div>
 
       <div className="header-right">
+        <LanguageToggle />
+
         {/* Emergency - Solid Red Pill / Highest Contrast / Rightmost */}
         {user.role === 'patient' && (
           <button
@@ -37,7 +42,7 @@ export default function Header() {
           >
             <span className="emergency-live-pulse" />
             <AlertTriangle size={15} />
-            <span>Emergency SOS</span>
+            <span>{t('emergencySos')}</span>
           </button>
         )}
 
