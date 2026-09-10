@@ -30,6 +30,7 @@ export default function HealthFlowAIChatModal({ isOpen, onClose }) {
   const [doctorsList, setDoctorsList] = useState([]);
   const [emergencyActive, setEmergencyActive] = useState(false);
   const [bookingHospital, setBookingHospital] = useState(null);
+  const [bookingDoctor, setBookingDoctor] = useState(null);
 
   const messagesEndRef = useRef(null);
 
@@ -147,6 +148,7 @@ export default function HealthFlowAIChatModal({ isOpen, onClose }) {
   const handleBookDoctor = (doc) => {
     // Find matching hospital in local data
     const hosp = hospitals.find(h => h.id === doc.hospital_id) || hospitals[0];
+    setBookingDoctor(doc);
     setBookingHospital(hosp);
   };
 
@@ -432,7 +434,11 @@ export default function HealthFlowAIChatModal({ isOpen, onClose }) {
       {bookingHospital && (
         <BookAppointmentModal
           hospital={bookingHospital}
-          onClose={() => setBookingHospital(null)}
+          preselectedDoctor={bookingDoctor}
+          onClose={() => {
+            setBookingHospital(null);
+            setBookingDoctor(null);
+          }}
         />
       )}
     </>

@@ -1,10 +1,10 @@
 // ==============================================================================
 // HealthFlow AI Symptom Assessment & Healthcare Navigation Service
 // ==============================================================================
-import doctors from '../data/doctors';
-import hospitals from '../data/hospitals';
+import doctors from '../data/doctors.js';
+import hospitals from '../data/hospitals.js';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api';
+const API_BASE = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL) || '/api';
 
 // Emergency Red-Flag Trigger Regexes
 const EMERGENCY_REGEX = /\b(chest pain|heart attack|angina|crushing|can'?t breathe|difficulty breathing|shortness of breath|suffocat|stroke|facial droop|slurred speech|thunderclap|paraly|unconscious|passed out|vomiting blood|coughing blood|severe bleeding|anaphylaxis|swollen throat)\b/i;
@@ -48,9 +48,11 @@ class AIChatService {
     return {
       conversation_id: convId,
       message: (
-        `Hello. I am HealthFlow AI assistant. I will guide you through a preliminary symptom assessment ` +
-        `to help you navigate to the right care and the right doctor in Patiala.\n\n` +
-        `How are you feeling today? Please describe your main symptoms in your own words.`
+        `Greetings. I am HealthFlow’s Clinical Triage & Navigation Assistant. I conduct structured preliminary ` +
+        `clinical assessments to evaluate symptom acuity, identify potential differentials, and connect you ` +
+        `with qualified medical specialists across Patiala.\n\n` +
+        `To begin, please outline your primary symptoms or health concerns in as much detail as you can ` +
+        `(including when they began and how they feel).`
       ),
       status: 'in_progress',
       session_info: { age, sex, target, engine: 'HealthFlow Clinical Protocol' }
@@ -265,21 +267,21 @@ class AIChatService {
         triage_level: 'emergency',
         triage_level_display: '🚨 IMMEDIATE EMERGENCY MEDICAL ATTENTION',
         recommended_specialty: 'Emergency Medicine',
-        assessment_summary: 'Reported symptoms match high-priority medical red-flag criteria requiring immediate intervention.',
+        assessment_summary: 'Reported symptoms match high-priority medical red-flag criteria requiring immediate intervention. Do not wait for a routine appointment.',
         possible_causes: [
           {
-            name: 'Acute High-Acuity Emergency',
+            name: 'Acute High-Acuity Emergency Condition',
             probability_label: 'Urgent',
-            description: 'Severe symptoms such as acute chest pressure, respiratory distress, or stroke signs require immediate evaluation by emergency physicians.'
+            description: 'Severe symptoms such as acute chest pressure, respiratory distress, or stroke-like signs require immediate evaluation by emergency physicians.'
           }
         ],
         safety_guidance: [
-          'Call 108 or activate the emergency assistance button below immediately.',
-          'Sit or lie down quietly; do not drive yourself.',
-          'Inform anyone nearby of what you are experiencing.'
+          'Immediately call 108 or activate the emergency dispatch button below.',
+          'Sit or lie down in a safe, resting position; do not exert yourself or drive.',
+          'Alert anyone nearby so you are continuously monitored until paramedics arrive.'
         ],
         is_emergency: true,
-        disclaimer: 'HealthFlow AI provides preliminary health information and care-navigation support. It does not provide a medical diagnosis or replace a qualified healthcare professional.'
+        disclaimer: 'HealthFlow AI provides preliminary health information and care-navigation support. It does not provide a definitive diagnosis or replace a qualified healthcare professional.'
       };
 
       session.assessment = assessment;
@@ -287,9 +289,12 @@ class AIChatService {
       return {
         conversation_id: convId,
         message: (
-          '🚨 URGENT MEDICAL ATTENTION MAY BE NEEDED\n\n' +
-          'The symptoms you described indicate a potential medical emergency. ' +
-          'Do not wait for this chatbot. Please seek emergency medical care immediately.'
+          '🚨 CLINICAL SAFETY ALERT: IMMEDIATE EMERGENCY MEDICAL EVALUATION REQUIRED\n\n' +
+          'The clinical symptoms you described indicate potential high-acuity distress. ' +
+          'Please do not wait for conversational triage.\n\n' +
+          '• Immediately dial 108 (or 112) or tap the emergency dispatch button below to mobilize emergency medical services in Patiala.\n' +
+          '• Rest in a comfortable seated or reclined position; do not exert yourself or attempt to drive.\n' +
+          '• Alert anyone nearby immediately so you are closely monitored until paramedics arrive.'
         ),
         status: 'emergency_triaged',
         is_assessment_ready: true,
@@ -298,17 +303,61 @@ class AIChatService {
       };
     }
 
-    // Step 1: Onset follow-up
+    const lower = userText.toLowerCase();
+
+    // Step 1: Onset, characteristics, and associated symptom review
     if (session.step === 1) {
-      const lower = userText.toLowerCase();
-      let question = 'When did your symptoms start, and have they been constant or coming in waves?';
-      if (lower.includes('headache')) {
-        question = 'How long have you had this headache, and did it start gradually or suddenly?';
-      } else if (lower.includes('fever')) {
-        question = 'How high is your fever (if measured), and do you have chills or body aches?';
-      } else if (lower.includes('stomach') || lower.includes('abdomen')) {
-        question = 'Where in your stomach is the pain located, and is it worse before or after eating?';
+      let question = (
+        'Thank you. To establish a clear clinical timeline:\n' +
+        '1. When precisely did you first notice these symptoms, and have they been constant, intermittent, or progressively worsening?\n' +
+        '2. Are there specific movements, resting positions, or activities that noticeably aggravate or relieve the symptoms?\n' +
+        '3. Have you taken any over-the-counter medications, and if so, did they provide any meaningful relief?'
+      );
+
+      if (lower.includes('headache') || lower.includes('migraine')) {
+        question = (
+          'Thank you. To help evaluate your headache clinically:\n' +
+          '1. How would you describe the pain character (e.g., throbbing/pulsatile, band-like tightening pressure, sharp, or dull ache)?\n' +
+          '2. Did this develop acutely within seconds/minutes or build gradually over hours or days?\n' +
+          '3. Are you experiencing visual changes (auras, blurriness), photophobia (light sensitivity), nausea, or neck stiffness?'
+        );
+      } else if (lower.includes('fever') || lower.includes('temperature') || lower.includes('chills')) {
+        question = (
+          'Thank you for sharing that. To assess your febrile illness:\n' +
+          '1. How high has your temperature measured (if checked), and how many days has it persisted?\n' +
+          '2. Are you experiencing rigors (shaking chills), generalized muscle/joint aches, or marked fatigue?\n' +
+          '3. Do you have any accompanying cough, sore throat, urinary burning, or skin rash?'
+        );
+      } else if (lower.includes('stomach') || lower.includes('abdomen') || lower.includes('belly') || lower.includes('nausea')) {
+        question = (
+          'Thank you. To assess your abdominal symptoms:\n' +
+          '1. Where precisely is the discomfort centered (e.g., upper epigastric, lower right/left quadrant, or generalized)?\n' +
+          '2. What is the nature of the pain (burning, sharp cramping, constant dull ache), and does food intake worsen or ease it?\n' +
+          '3. Have you experienced nausea, vomiting, acid reflux, or alterations in bowel habits?'
+        );
+      } else if (lower.includes('cough') || lower.includes('throat') || lower.includes('cold') || lower.includes('flu')) {
+        question = (
+          'Thank you. To evaluate your respiratory presentation:\n' +
+          '1. Is the cough dry, or productive of mucus/phlegm?\n' +
+          '2. Are you experiencing chest tightness, audible wheezing, or breathlessness when climbing stairs or walking?\n' +
+          '3. Do you have a concurrent sore throat, nasal congestion, or loss of smell/taste?'
+        );
+      } else if (lower.includes('knee') || lower.includes('back') || lower.includes('joint') || lower.includes('spine') || lower.includes('leg')) {
+        question = (
+          'Thank you. To evaluate your musculoskeletal symptoms:\n' +
+          '1. Is the discomfort localized to a specific joint or spinal region, or does it radiate into your extremities?\n' +
+          '2. Did this follow a specific mechanical strain, twist, or injury, and does weight-bearing worsen it?\n' +
+          '3. Have you observed any joint swelling, visible warmth, erythema (redness), or stiffness upon waking?'
+        );
+      } else if (lower.includes('rash') || lower.includes('itch') || lower.includes('skin')) {
+        question = (
+          'Thank you. To assist in evaluating your skin presentation:\n' +
+          '1. Where did the rash or lesion first appear, and has its distribution expanded?\n' +
+          '2. Is the area accompanied by intense pruritus (itching), burning discomfort, or localized warmth?\n' +
+          '3. Have you had recent exposure to new medications, personal care items, insect bites, or potential allergens?'
+        );
       }
+
       return {
         conversation_id: convId,
         message: question,
@@ -318,11 +367,16 @@ class AIChatService {
       };
     }
 
-    // Step 2: Severity follow-up
+    // Step 2: Severity, functional impairment, and systemic red-flag screening
     if (session.step === 2) {
       return {
         conversation_id: convId,
-        message: 'On a scale of 1 to 10 (with 10 being severe), how intense is the discomfort, and are you experiencing any nausea, dizziness, or weakness?',
+        message: (
+          'Thank you for providing that clinical context.\n\n' +
+          '1. On a clinical scale from 1 to 10 (where 1 is minimal discomfort and 10 is unbearable pain or distress), what is your current severity level?\n' +
+          '2. Is this condition significantly interfering with your daily activities, mobility, or ability to sleep?\n' +
+          '3. Have you experienced any systemic warning signs such as dizziness, lightheadedness, unexplained weakness, or difficulty keeping fluids down?'
+        ),
         status: 'in_progress',
         is_assessment_ready: false,
         is_emergency: false
@@ -333,33 +387,78 @@ class AIChatService {
     const combined = session.symptoms.join(' ').toLowerCase();
     let specialty = 'General Medicine';
     let causes = [];
-    let summary = 'Preliminary assessment indicates self-limiting or non-emergency symptoms.';
+    let summary = 'Preliminary clinical assessment indicates non-emergency symptoms warranting routine clinical evaluation.';
     let guidance = [
-      'Maintain adequate fluid intake and rest.',
-      'Monitor your symptoms closely over the next 24 hours.',
-      'Consult the recommended specialist for an in-person clinical examination.'
+      'Maintain adequate fluid hydration and adequate physical rest.',
+      'Document symptom progression, temperature readings, and triggers in a diary.',
+      'Schedule an in-person consultation with the recommended medical specialist for comprehensive evaluation.'
     ];
 
-    if (combined.includes('headache')) {
+    if (combined.includes('headache') || combined.includes('migraine')) {
       specialty = 'Neurology';
-      summary = 'Symptoms are consistent with a tension-type headache or migraine-pattern discomfort.';
+      summary = 'Clinical presentation suggests tension-type headache or migraine-spectrum cephalalgia.';
       causes = [
-        { name: 'Tension-Type Headache', probability_label: 'Common', description: 'Often triggered by strain, lack of sleep, or dehydration.' },
-        { name: 'Migraine Pattern', probability_label: 'Possible', description: 'Pulsating head pain with light or sound sensitivity.' }
+        { name: 'Tension-Type Headache', probability_label: 'Common', description: 'Frequently related to cervical muscle tension, emotional strain, inadequate sleep, or digital eye fatigue.' },
+        { name: 'Migraine without Aura', probability_label: 'Possible', description: 'Unilateral or pulsatile head discomfort frequently exacerbated by routine physical activity and light/sound sensitivity.' },
+        { name: 'Cervicogenic Headache', probability_label: 'Less Likely', description: 'Referred cephalic pain originating from cervical spine or muscular irritation.' }
       ];
-    } else if (combined.includes('fever')) {
+      guidance = [
+        'Rest in a quiet, dark, well-ventilated room.',
+        'Apply a cool compress across forehead or nape of neck.',
+        'Avoid prolonged screen exposure and maintain adequate hydration.',
+        'Seek urgent care if headache develops thunderclap intensity or presents with stiff neck or focal neurological deficits.'
+      ];
+    } else if (combined.includes('fever') || combined.includes('temperature') || combined.includes('chills')) {
       specialty = 'General Medicine';
-      summary = 'Symptoms indicate acute febrile illness, commonly of viral origin.';
+      summary = 'Clinical presentation indicates acute febrile illness, commonly of viral etiology.';
       causes = [
-        { name: 'Viral Febrile Syndrome', probability_label: 'Common', description: 'Self-limiting viral infection with fever and body aches.' },
-        { name: 'Influenza-like Illness', probability_label: 'Possible', description: 'Seasonal viral illness requiring rest and hydration.' }
+        { name: 'Viral Upper Respiratory / Febrile Illness', probability_label: 'Common', description: 'Self-limiting viral syndrome manifesting with elevated core temperature, myalgia, and constitutional fatigue.' },
+        { name: 'Influenza-like Illness (ILI)', probability_label: 'Possible', description: 'Acute systemic viral infection characterized by sudden pyrexia, chills, headache, and generalized aches.' },
+        { name: 'Focal Bacterial Infection', probability_label: 'Less Likely', description: 'Underlying bacterial focus requiring formal physical examination and laboratory workup.' }
       ];
-    } else if (combined.includes('stomach') || combined.includes('abdomen')) {
+      guidance = [
+        'Maintain oral hydration with clean water, soups, or oral rehydration solutions.',
+        'Monitor and chart temperature readings every 4 to 6 hours.',
+        'Ensure restful convalescence and avoid physical exertion.',
+        'Consult a physician promptly if fever exceeds 102°F (38.9°C) or fails to abate after 72 hours.'
+      ];
+    } else if (combined.includes('stomach') || combined.includes('abdomen') || combined.includes('belly') || combined.includes('nausea')) {
       specialty = 'Gastroenterology';
-      summary = 'Symptoms suggest acute gastric irritation or dyspepsia.';
+      summary = 'Symptoms indicate upper or lower gastrointestinal irritation, consistent with dyspeptic syndrome.';
       causes = [
-        { name: 'Acute Dyspepsia / Gastritis', probability_label: 'Common', description: 'Indigestion or irritation of the gastric mucosa.' },
-        { name: 'Gastroenteritis', probability_label: 'Possible', description: 'Mild inflammatory reaction of the digestive tract.' }
+        { name: 'Acute Dyspepsia / Gastric Irritation', probability_label: 'Common', description: 'Inflammation or mucosal hypersensitivity of the stomach lining often triggered by dietary factors or stress.' },
+        { name: 'Gastroesophageal Reflux Disease (GERD)', probability_label: 'Possible', description: 'Retrograde flow of gastric acid causing pyrosis (heartburn) and substernal or epigastric discomfort.' },
+        { name: 'Acute Infectious Gastroenteritis', probability_label: 'Possible', description: 'Transient inflammatory response of the intestinal tract to viral or foodborne pathogens.' }
+      ];
+      guidance = [
+        'Consume small, bland, non-greasy meals (e.g., khichdi, yogurt, boiled rice, toast).',
+        'Refrain from caffeine, carbonated drinks, acidic citrus, and spicy or fried items.',
+        'Remain upright for at least two hours following food intake.',
+        'Seek emergency medical evaluation if abdominal discomfort becomes rigid, severe, or accompanied by hematemesis (vomiting blood).'
+      ];
+    } else if (combined.includes('knee') || combined.includes('back') || combined.includes('joint') || combined.includes('spine')) {
+      specialty = 'Orthopedics';
+      summary = 'Symptoms suggest mechanical musculoskeletal strain or localized articular inflammation.';
+      causes = [
+        { name: 'Acute Musculoskeletal / Myofascial Strain', probability_label: 'Common', description: 'Microtrauma or fatigue in supportive muscular or ligamentous structures.' },
+        { name: 'Articular Degeneration / Early Arthropathy', probability_label: 'Possible', description: 'Cartilage stress or low-grade synovial inflammation worsened by weight-bearing.' }
+      ];
+      guidance = [
+        'Implement relative rest and avoid high-impact physical loading on the affected region.',
+        'Consider cold pack application for acute flare-ups (15-20 min periods).',
+        'Consult an orthopedic physician for clinical evaluation and radiographic assessment if pain impairs gait or range of motion.'
+      ];
+    } else if (combined.includes('rash') || combined.includes('itch') || combined.includes('skin')) {
+      specialty = 'Dermatology';
+      summary = 'Cutaneous presentation consistent with reactive dermatitis or allergic dermatosis.';
+      causes = [
+        { name: 'Contact Dermatitis / Cutaneous Hypersensitivity', probability_label: 'Common', description: 'Localized inflammatory skin reaction to external chemical, botanical, or fabric irritants.' },
+        { name: 'Urticaria (Hives)', probability_label: 'Possible', description: 'Transient pruritic erythematous wheals triggered by systemic or environmental allergens.' }
+      ];
+      guidance = [
+        'Refrain from vigorous scratching to avert secondary cutaneous bacterial infection.',
+        'Bathe with lukewarm water and mild, hypoallergenic, fragrance-free cleansers.',
+        'Schedule a dermatological consultation for targeted clinical evaluation and topical management.'
       ];
     }
 
@@ -370,7 +469,7 @@ class AIChatService {
       recommended_specialty: specialty,
       assessment_summary: summary,
       possible_causes: causes.length ? causes : [
-        { name: 'Common Clinical Syndrome', probability_label: 'Possible', description: 'Please consult a doctor to discuss appropriate diagnostic steps.' }
+        { name: 'Non-Specific Clinical Presentation', probability_label: 'Possible', description: 'Please consult a general physician for formal clinical examination and diagnostic workup.' }
       ],
       safety_guidance: guidance,
       is_emergency: false,
@@ -381,7 +480,10 @@ class AIChatService {
 
     return {
       conversation_id: convId,
-      message: 'Thank you for providing these details. I have generated your preliminary symptom assessment. Please review the findings and recommended specialists below.',
+      message: (
+        'Thank you for answering these clinical questions. I have completed your preliminary symptom evaluation. ' +
+        'Please review the summary, differential considerations, triage urgency level, and verified specialist care pathways below.'
+      ),
       status: 'completed',
       is_assessment_ready: true,
       is_emergency: false,

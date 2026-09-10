@@ -235,7 +235,7 @@ export default function LoginPage() {
           <button 
             type="button"
             className="patient-link-btn"
-            onClick={() => navigate('/patient')}
+            onClick={() => navigate('/patient/portal')}
           >
             Continue to Patient Portal →
           </button>

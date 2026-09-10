@@ -103,9 +103,11 @@ class InfermedicaService:
         _CONVERSATIONS[conv_id] = session_data
 
         welcome_msg = (
-            f"Hello. I am HealthFlow AI assistant. I will guide you through a preliminary symptom assessment "
-            f"to help you navigate to the right care and the right doctor in Patiala.\n\n"
-            f"How are you feeling today? Please describe your main symptoms in your own words."
+            "Greetings. I am HealthFlow’s Clinical Triage & Navigation Assistant. I conduct structured preliminary "
+            "clinical assessments to evaluate symptom acuity, identify potential differentials, and connect you "
+            "with qualified medical specialists across Patiala.\n\n"
+            "To begin, please outline your primary symptoms or health concerns in as much detail as you can "
+            "(including when they began and how they feel)."
         )
 
         return {
@@ -153,9 +155,12 @@ class InfermedicaService:
             session["assessment"] = assessment
             
             emergency_reply = (
-                "🚨 URGENT MEDICAL ATTENTION MAY BE NEEDED\n\n"
-                "The symptoms you described indicate a potential medical emergency. "
-                "Do not wait for this chatbot. Please seek emergency medical care immediately."
+                "🚨 CLINICAL SAFETY ALERT: IMMEDIATE EMERGENCY MEDICAL EVALUATION REQUIRED\n\n"
+                "The clinical symptoms you described indicate potential high-acuity or life-threatening distress. "
+                "Please do not wait for conversational triage.\n\n"
+                "• Immediately dial 108 (or 112) or tap the emergency dispatch button below to mobilize emergency medical services in Patiala.\n"
+                "• Rest in a comfortable seated or reclined position; do not exert yourself or attempt to drive.\n"
+                "• Alert anyone nearby immediately so you are closely monitored until paramedics arrive."
             )
             return ChatMessageResponse(
                 conversation_id=conversation_id,
@@ -195,14 +200,14 @@ class InfermedicaService:
                                 session["assessment"] = assessment
                                 return ChatMessageResponse(
                                     conversation_id=conversation_id,
-                                    message="Thank you for providing these details. I have generated your preliminary care assessment below.",
+                                    message="Thank you for providing those clinical details. I have finalized your preliminary clinical triage assessment. Please review the findings, differential considerations, and verified specialist referrals below.",
                                     status="completed",
                                     is_assessment_ready=True,
                                     is_emergency=assessment.is_emergency,
                                     assessment=assessment
                                 )
                             else:
-                                next_q = data.get("question", {}).get("text", "Could you provide more details regarding your symptoms?")
+                                next_q = data.get("question", {}).get("text", "Could you provide additional clinical context regarding your symptoms?")
                                 choices = [c.get("label") for c in data.get("question", {}).get("items", [])]
                                 return ChatMessageResponse(
                                     conversation_id=conversation_id,
@@ -219,20 +224,66 @@ class InfermedicaService:
         session["symptoms_reported"].append(user_text)
 
         if step == 1:
-            # Turn 1: Onset and duration follow-up
+            # Turn 1: Onset, characteristics, and associated symptoms review
             symptom_category = cls._categorize_symptom(user_lower)
             session["primary_category"] = symptom_category
             
             if symptom_category == "headache":
-                question = "How long have you had this headache, and did it start gradually or very suddenly?"
+                question = (
+                    "Thank you. To help evaluate your headache clinically:\n"
+                    "1. How would you describe the pain character (e.g., throbbing/pulsatile, band-like tightening pressure, sharp, or dull ache)?\n"
+                    "2. Did this develop acutely within seconds/minutes or build gradually over hours or days?\n"
+                    "3. Are you experiencing visual changes (auras, blurriness), photophobia (light sensitivity), nausea, or neck stiffness?"
+                )
             elif symptom_category == "fever":
-                question = "How many days have you had the fever, and do you have chills, body pain, or a cough?"
+                question = (
+                    "Thank you for sharing that. To assess your febrile illness:\n"
+                    "1. How high has your temperature measured (if checked), and how many days has it persisted?\n"
+                    "2. Are you experiencing rigors (shaking chills), generalized muscle/joint aches, or marked fatigue?\n"
+                    "3. Do you have any accompanying cough, sore throat, urinary burning, or skin rash?"
+                )
             elif symptom_category == "abdominal":
-                question = "Where in your abdomen is the pain located (e.g. upper, lower, left, right), and does it worsen after eating?"
+                question = (
+                    "Thank you. To assess your abdominal symptoms:\n"
+                    "1. Where precisely is the discomfort centered (e.g., upper epigastric, lower right/left quadrant, or generalized)?\n"
+                    "2. What is the nature of the pain (burning, sharp cramping, constant dull ache), and does food intake worsen or ease it?\n"
+                    "3. Have you experienced nausea, vomiting, acid reflux, or alterations in bowel habits?"
+                )
             elif symptom_category == "chest":
-                question = "Does the chest sensation radiate to your arm, neck, or jaw, and do you feel breathless?"
+                question = (
+                    "Thank you for noting that. To evaluate this with appropriate clinical vigilance:\n"
+                    "1. How does the sensation feel (e.g., localized sharp sting, pressure, burning reflux, or fluttering)?\n"
+                    "2. Does the sensation change with deep inspiration, coughing, or postural adjustments?\n"
+                    "3. Are you experiencing any accompanying shortness of breath, perspiration, or radiating discomfort to your jaw, neck, or left arm?"
+                )
+            elif symptom_category == "respiratory":
+                question = (
+                    "Thank you. To evaluate your respiratory presentation:\n"
+                    "1. Is the cough dry, or productive of mucus/phlegm?\n"
+                    "2. Are you experiencing chest tightness, audible wheezing, or breathlessness when climbing stairs or walking?\n"
+                    "3. Do you have a concurrent sore throat, nasal congestion, or loss of smell/taste?"
+                )
+            elif symptom_category == "orthopedic":
+                question = (
+                    "Thank you. To evaluate your musculoskeletal symptoms:\n"
+                    "1. Is the discomfort localized to a specific joint or spinal region, or does it radiate into your extremities?\n"
+                    "2. Did this follow a specific mechanical strain, twist, or injury, and does weight-bearing worsen it?\n"
+                    "3. Have you observed any joint swelling, visible warmth, erythema (redness), or stiffness upon waking?"
+                )
+            elif symptom_category == "dermatology":
+                question = (
+                    "Thank you. To assist in evaluating your skin presentation:\n"
+                    "1. Where did the rash or lesion first appear, and has its distribution expanded?\n"
+                    "2. Is the area accompanied by intense pruritus (itching), burning discomfort, or localized warmth?\n"
+                    "3. Have you had recent exposure to new medications, personal care items, insect bites, or potential allergens?"
+                )
             else:
-                question = "When did this start, and how has it progressed over the past 24 to 48 hours?"
+                question = (
+                    "Thank you. To establish a clear clinical timeline:\n"
+                    "1. When precisely did you first notice these symptoms, and have they been constant, intermittent, or progressively worsening?\n"
+                    "2. Are there specific movements, resting positions, or activities that noticeably aggravate or relieve the symptoms?\n"
+                    "3. Have you taken any over-the-counter medications, and if so, did they provide any meaningful relief?"
+                )
 
             return ChatMessageResponse(
                 conversation_id=conversation_id,
@@ -241,10 +292,12 @@ class InfermedicaService:
             )
 
         elif step == 2:
-            # Turn 2: Severity and character follow-up
+            # Turn 2: Severity, functional impairment & systemic red-flag screening
             question = (
-                "On a scale of 1 to 10 (with 10 being unbearable), how severe is the discomfort, "
-                "and have you noticed any other symptoms such as nausea, dizziness, or weakness?"
+                "Thank you for providing that clinical context.\n\n"
+                "1. On a clinical scale from 1 to 10 (where 1 is minimal discomfort and 10 is unbearable pain or distress), what is your current severity level?\n"
+                "2. Is this condition significantly interfering with your daily activities, mobility, or ability to sleep?\n"
+                "3. Have you experienced any systemic warning signs such as dizziness, lightheadedness, unexplained weakness, or difficulty keeping fluids down?"
             )
             return ChatMessageResponse(
                 conversation_id=conversation_id,
@@ -253,14 +306,17 @@ class InfermedicaService:
             )
 
         else:
-            # Step >= 3: Finalize Assessment
+            # Step >= 3: Finalize Clinical Assessment
             assessment = cls._build_clinical_assessment(conversation_id, session)
             session["status"] = "completed"
             session["assessment"] = assessment
 
             return ChatMessageResponse(
                 conversation_id=conversation_id,
-                message="Thank you for answering these questions. I have completed your preliminary symptom assessment. Please review the recommended care level and suggested specialist below.",
+                message=(
+                    "Thank you for answering these clinical questions. I have completed your preliminary symptom evaluation. "
+                    "Please review the summary, differential considerations, triage urgency level, and verified specialist care pathways below."
+                ),
                 status="completed",
                 is_assessment_ready=True,
                 is_emergency=assessment.is_emergency,

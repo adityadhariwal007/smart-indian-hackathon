@@ -34,7 +34,7 @@ const itemVariants = {
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const { user, isAuthenticated, login } = useAuth();
+  const { user, isAuthenticated, login, switchRole } = useAuth();
   const { t } = useLanguage();
   const { scrollY } = useScroll();
   const [isAiChatOpen, setIsAiChatOpen] = useState(false);
@@ -249,8 +249,11 @@ export default function LandingPage() {
           >
             <button 
               className="hero-book-btn"
-              onClick={() => setBookingHospital(hospitals[0])}
-              title="Schedule In-Person OPD or Online Teleconsultation"
+              onClick={() => {
+                switchRole('patient');
+                navigate('/patient/portal');
+              }}
+              title="Open Patient Portal"
             >
               {t('bookAppointment')}
             </button>

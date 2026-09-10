@@ -65,7 +65,7 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/terms" element={<TermsAndConditions />} />
-      <Route path="/book-appointment" element={<Navigate to="/patient/appointments" replace />} />
+      <Route path="/book-appointment" element={<Navigate to="/patient/portal" replace />} />
       <Route path="/complaints" element={<Navigate to="/patient/complaints" replace />} />
       <Route path="/portal" element={<Navigate to="/patient/portal" replace />} />
       <Route path="/signup" element={<PatientSignupPage />} />
