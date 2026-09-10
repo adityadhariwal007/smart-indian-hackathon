@@ -10,6 +10,7 @@ import {
 import { ScrollReveal, AnimatedCounter, MagneticButton } from '../../components/animations/Animations';
 import MaskedHeading from '../../components/common/MaskedHeading';
 import MagicBento from './MagicBento';
+import HealthcareLogoBanner from '../../components/common/HealthcareLogoBanner';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import LanguageToggle from '../../components/common/LanguageToggle';
@@ -46,7 +47,7 @@ export default function LandingPage() {
   const stats = [
     { value: '20', suffix: '+', label: t('statHospitals'), icon: MapPin },
     { value: '150', suffix: '+', label: t('statSpecialists'), icon: Users },
-    { value: '28', suffix: ' min', label: t('statWait'), icon: Clock },
+    { value: '38', suffix: ' min', label: t('statWait'), icon: Clock },
     { value: '99', suffix: '%', label: t('statAccuracy'), icon: Shield },
   ];
 
@@ -76,26 +77,45 @@ export default function LandingPage() {
         <div className="landing-pill-menu">
           <LanguageToggle />
 
-          <button
-            className="nav-role-btn"
-            style={{ background: 'transparent', color: '#1E293B', fontWeight: 600, border: '1px solid #CBD5E1' }}
-            onClick={() => {
-              const el = document.getElementById('directory');
-              if (el) el.scrollIntoView({ behavior: 'smooth' });
-            }}
-          >
-            Hospitals
-          </button>
+          {/* Quick Role Login Buttons - Patient, Doctor and Admin Portal */}
+          <div className="landing-role-nav-group" role="group" aria-label="Portal shortcuts">
+            <button
+              className="nav-role-btn nav-role-patient"
+              onClick={() => handleRoleLogin('patient')}
+              title="Open Patient Portal"
+            >
+              <User size={13} />
+              <span>{t('patient')}</span>
+            </button>
 
-          <button
-            className="nav-role-btn"
-            style={{ background: '#059669', color: '#FFFFFF', fontWeight: 700, borderColor: '#059669', boxShadow: '0 2px 8px rgba(5, 150, 105, 0.25)' }}
-            onClick={() => navigate('/login')}
-            title="Sign in with Google or Mobile OTP"
-          >
-            <LogIn size={14} />
-            <span>Sign In</span>
-          </button>
+            <button
+              className="nav-role-btn nav-role-doctor"
+              onClick={() => handleRoleLogin('doctor')}
+              title="Open Doctor Portal"
+            >
+              <Stethoscope size={13} />
+              <span>{t('doctor')}</span>
+            </button>
+
+            <button
+              className="nav-role-btn nav-role-admin"
+              onClick={() => handleRoleLogin('admin')}
+              title="Open Hospital Admin Portal"
+            >
+              <Shield size={13} />
+              <span>{t('admin')}</span>
+            </button>
+
+            <button
+              className="nav-role-btn"
+              style={{ background: '#059669', color: '#fff', fontWeight: 700, borderColor: '#059669' }}
+              onClick={() => navigate('/login')}
+              title="Sign in with Google or Mobile OTP"
+            >
+              <LogIn size={13} />
+              <span>Sign In</span>
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -178,169 +198,153 @@ export default function LandingPage() {
               <span>{t('emergencyBtn')}</span>
             </button>
           </motion.div>
-
-          {/* Grounded Live Product Telemetry Snapshot Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="hero-live-telemetry-box"
-          >
-            <div className="hero-telemetry-header">
-              <div className="flex items-center gap-2">
-                <span className="live-status-dot" />
-                <span className="text-xs font-semibold text-emerald-300">Live Hospital & Ambulance Telemetry • Patiala District</span>
-              </div>
-              <span className="text-[11px] text-slate-400 font-mono">Updated just now</span>
-            </div>
-
-            <div className="telemetry-grid">
-              <div className="telemetry-item">
-                <div className="telemetry-item-title">
-                  <HeartPulse size={14} className="text-emerald-400" />
-                  <span>GMC Rajindra Hospital</span>
-                </div>
-                <div className="telemetry-item-meta">
-                  1,100 Total Beds • <strong className="text-emerald-300">142 Available</strong> (ICU: 18)
-                </div>
-              </div>
-
-              <div className="telemetry-item">
-                <div className="telemetry-item-title">
-                  <Activity size={14} className="text-blue-400" />
-                  <span>Civil Hospital Mata Kaushalya</span>
-                </div>
-                <div className="telemetry-item-meta">
-                  320 Total Beds • <strong className="text-blue-300">46 Available</strong> (ICU: 6)
-                </div>
-              </div>
-
-              <div className="telemetry-item">
-                <div className="telemetry-item-title">
-                  <Clock size={14} className="text-amber-400" />
-                  <span>OPD Queue Telemetry</span>
-                </div>
-                <div className="telemetry-item-meta">
-                  Token <strong className="text-white font-mono">#A-118</strong> Called • Avg Wait &lt; 28 min
-                </div>
-              </div>
-
-              <div className="telemetry-item">
-                <div className="telemetry-item-title">
-                  <Ambulance size={14} className="text-red-400" />
-                  <span>108 Emergency Standby</span>
-                </div>
-                <div className="telemetry-item-meta">
-                  Unit ALS-04 at Fountain Chowk • <strong className="text-emerald-300">ETA 8 min</strong>
-                </div>
-              </div>
-            </div>
-          </motion.div>
         </div>
       </section>
 
-      {/* 4-Step Patient Care Journey Grid */}
-      <section className="care-journey-wrapper" id="directory">
-        <div className="care-journey-grid">
-          {/* Step 1: Real-Time Bed & Facility Capacity */}
-          <motion.div
-            className="care-journey-card"
-            initial={{ opacity: 0, y: 20 }}
+      {/* Informative Public Health & Customer Feature Cards */}
+      <section className="emerging-cards-wrapper" id="directory">
+        <div className="emerging-cards-grid">
+          {/* Card 1: Hospital Directory & Verified Facilities */}
+          <motion.div 
+            className="emerging-card-box"
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 0.5 }}
           >
-            <div className="care-journey-step-num">1</div>
-            <h3 className="care-journey-title">Live Hospital Capacity</h3>
-            <p className="care-journey-desc">
-              Inspect real-time general and ICU bed occupancy across 20 verified Patiala hospitals before leaving home.
-            </p>
-            <button
-              className="care-journey-action-btn"
+            <div>
+              <span className="emerging-tag">{t('card1Tag')}</span>
+              <h2 className="emerging-title">{t('card1Title')}</h2>
+              <p className="text-secondary text-sm mb-4 leading-relaxed">
+                {t('card1Desc')}
+              </p>
+
+              {/* Customer Benefits & Key Features */}
+              <div className="emerging-benefits-list">
+                <div className="emerging-benefit-item">
+                  <CheckCircle2 size={16} className="emerging-benefit-icon" />
+                  <span>{t('card1Benefit1')}</span>
+                </div>
+                <div className="emerging-benefit-item">
+                  <CheckCircle2 size={16} className="emerging-benefit-icon" />
+                  <span>{t('card1Benefit2')}</span>
+                </div>
+                <div className="emerging-benefit-item">
+                  <CheckCircle2 size={16} className="emerging-benefit-icon" />
+                  <span>{t('card1Benefit3')}</span>
+                </div>
+              </div>
+            </div>
+
+            <div 
+              className="emerging-card-preview group cursor-pointer"
               onClick={() => {
                 switchRole('patient');
                 navigate('/patient/hospitals');
               }}
             >
-              <span>Explore Facilities</span>
-              <ArrowRight size={14} />
-            </button>
+              <div className="flex justify-between items-center text-xs pb-3 border-b border-slate-200/80">
+                <span className="font-semibold text-slate-800">{t('card1District')}</span>
+                <span className="text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                  {t('card1Badge')}
+                </span>
+              </div>
+
+              <div className="flex justify-between items-center py-2.5 border-b border-slate-200/50 text-xs">
+                <div>
+                  <div className="font-semibold text-slate-800">{t('card1Hosp1Name')}</div>
+                  <div className="text-slate-500 text-[11px]">{t('card1Hosp1Desc')}</div>
+                </div>
+                <span className="badge badge-success text-[11px]">{t('card1GovtFee')}</span>
+              </div>
+
+              <div className="flex justify-between items-center py-2.5 text-xs">
+                <div>
+                  <div className="font-semibold text-slate-800">{t('card1Hosp2Name')}</div>
+                  <div className="text-slate-500 text-[11px]">{t('card1Hosp2Desc')}</div>
+                </div>
+                <span className="badge badge-success text-[11px]">{t('card1GovtFee')}</span>
+              </div>
+
+              <div className="pt-2.5 border-t border-slate-200/80 flex items-center justify-between text-xs font-semibold text-emerald-700 group-hover:text-emerald-800">
+                <span>{t('card1Explore')}</span>
+                <ArrowRight size={14} className="group-hover:translate-x-1 transition" />
+              </div>
+            </div>
           </motion.div>
 
-          {/* Step 2: Digital OPD Queue Token */}
-          <motion.div
-            className="care-journey-card"
-            initial={{ opacity: 0, y: 20 }}
+          {/* Card 2: Queues, Triage & Emergency */}
+          <motion.div 
+            className="emerging-card-box"
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
           >
-            <div className="care-journey-step-num">2</div>
-            <h3 className="care-journey-title">Digital Queue Token</h3>
-            <p className="care-journey-desc">
-              Get an instant digital token for government and empanelled OPDs. Monitor your position live and arrive right on time.
-            </p>
-            <button
-              className="care-journey-action-btn"
+            <div>
+              <span className="emerging-tag">{t('card2Tag')}</span>
+              <h2 className="emerging-title">{t('card2Title')}</h2>
+              <p className="text-secondary text-sm mb-4 leading-relaxed">
+                {t('card2Desc')}
+              </p>
+
+              {/* Customer Benefits & Key Features */}
+              <div className="emerging-benefits-list">
+                <div className="emerging-benefit-item">
+                  <CheckCircle2 size={16} className="emerging-benefit-icon" />
+                  <span>{t('card2Benefit1')}</span>
+                </div>
+                <div className="emerging-benefit-item">
+                  <CheckCircle2 size={16} className="emerging-benefit-icon" />
+                  <span>{t('card2Benefit2')}</span>
+                </div>
+                <div className="emerging-benefit-item">
+                  <CheckCircle2 size={16} className="emerging-benefit-icon" />
+                  <span>{t('card2Benefit3')}</span>
+                </div>
+              </div>
+            </div>
+
+            <div 
+              className="emerging-dark-preview group cursor-pointer"
               onClick={() => {
                 switchRole('patient');
                 navigate('/patient/queue');
               }}
             >
-              <span>Check Live Queue</span>
-              <ArrowRight size={14} />
-            </button>
-          </motion.div>
+              <div className="flex justify-between items-center text-xs pb-2.5 border-b border-slate-800">
+                <div className="flex items-center gap-2">
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981' }}></span>
+                  <span className="text-slate-300 font-medium">{t('card2QueueStatus')}</span>
+                </div>
+                <span className="text-emerald-400 font-semibold text-[11px]">{t('card2ActiveHours')}</span>
+              </div>
 
-          {/* Step 3: Clinical Consultation & ABDM Records */}
-          <motion.div
-            className="care-journey-card"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.2 }}
-          >
-            <div className="care-journey-step-num">3</div>
-            <h3 className="care-journey-title">ABDM Health Records</h3>
-            <p className="care-journey-desc">
-              Access digital prescriptions, diagnostic lab reports, and doctor notes safely linked to your 14-digit ABHA address.
-            </p>
-            <button
-              className="care-journey-action-btn"
-              onClick={() => {
-                switchRole('patient');
-                navigate('/patient/portal');
-              }}
-            >
-              <span>Open Health Portal</span>
-              <ArrowRight size={14} />
-            </button>
-          </motion.div>
+              <div className="p-3 bg-slate-800/90 rounded-xl border border-slate-700/80 flex justify-between items-center text-xs">
+                <div>
+                  <div className="font-bold text-white text-sm">{t('card2TokenNumber')}</div>
+                  <div className="text-slate-400 text-[11px]">{t('card2TokenWait')}</div>
+                </div>
+                <span className="badge badge-primary text-[11px]">{t('card2InQueue')}</span>
+              </div>
 
-          {/* Step 4: Rapid 108 Emergency Dispatch */}
-          <motion.div
-            className="care-journey-card"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.3 }}
-          >
-            <div className="care-journey-step-num" style={{ background: '#FEE2E2', color: '#DC2626' }}>4</div>
-            <h3 className="care-journey-title">108 Emergency Dispatch</h3>
-            <p className="care-journey-desc">
-              One-tap dispatch for GPS-tracked Advanced Life Support (ALS) ambulances directly to your Patiala neighborhood.
-            </p>
-            <button
-              className="care-journey-action-btn"
-              style={{ color: '#DC2626' }}
-              onClick={() => {
-                switchRole('patient');
-                navigate('/patient/emergency');
-              }}
-            >
-              <span>Emergency Services</span>
-              <ArrowRight size={14} />
-            </button>
+              <div 
+                className="p-2.5 bg-red-950/60 rounded-xl border border-red-900/60 flex justify-between items-center text-xs text-red-200 hover:bg-red-900/50 transition"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  switchRole('patient');
+                  navigate('/patient/emergency');
+                }}
+              >
+                <div className="flex items-center gap-2">
+                  <AlertTriangle size={15} className="text-red-400 shrink-0" />
+                  <span>{t('card2Helpline')}</span>
+                </div>
+                <span className="text-emerald-400 font-bold group-hover:translate-x-1 transition flex items-center gap-1">
+                  {t('card2Sos')} <ArrowRight size={13} />
+                </span>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -368,7 +372,7 @@ export default function LandingPage() {
       <section className="benefits py-24 bg-gray-50/60" id="features">
         <div className="benefits-inner max-w-7xl mx-auto px-6">
           <ScrollReveal className="section-header text-center mb-14">
-            <span className="quiet-category text-emerald-700 mb-2 block">
+            <span className="text-xs font-bold uppercase tracking-[0.14em] text-emerald-600 mb-2 block">
               {t('capabilitiesTag')}
             </span>
             <h2 className="text-4xl font-extrabold mb-4 text-slate-900">{t('whyHealthFlow')}</h2>
@@ -437,6 +441,9 @@ export default function LandingPage() {
           />
         </div>
       </section>
+
+      {/* Monochrome Healthcare Icons Loop Banner on Black Background */}
+      <HealthcareLogoBanner />
 
       {/* Footer */}
       <footer className="landing-footer">

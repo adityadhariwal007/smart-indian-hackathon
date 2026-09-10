@@ -71,7 +71,7 @@ export default function QueueToken() {
               </div>
               
               <div className="relative z-10">
-                <div className="text-sm opacity-90 mb-1 font-medium">Your Token Number</div>
+                <div className="text-sm opacity-80 mb-2 uppercase tracking-[0.2em] font-semibold">Your Token</div>
                 <motion.div 
                   variants={stampVariants}
                   initial="hidden"
@@ -94,7 +94,7 @@ export default function QueueToken() {
                     <Ticket size={24} />
                   </div>
                   <div className="stat-value text-4xl mb-1 text-primary">{prefix}-{currentToken}</div>
-                  <div className="quiet-category text-xs">Current Token</div>
+                  <div className="stat-label uppercase tracking-wider text-xs">Current Token</div>
                 </div>
               </ScrollReveal>
               <ScrollReveal delay={0.2}>
@@ -106,7 +106,7 @@ export default function QueueToken() {
                   <div className="stat-value text-4xl mb-1 text-warning">
                     <AnimatedCounter value={ahead} />
                   </div>
-                  <div className="quiet-category text-xs">Patients Ahead</div>
+                  <div className="stat-label uppercase tracking-wider text-xs">Patients Ahead</div>
                 </div>
               </ScrollReveal>
               <ScrollReveal delay={0.3}>
@@ -118,7 +118,7 @@ export default function QueueToken() {
                   <div className={`stat-value text-4xl mb-1 flex justify-center items-baseline gap-1 ${ahead <= 5 ? 'text-success' : 'text-warning'}`}>
                     <AnimatedCounter value={waitMin} /><span className="text-lg font-medium">min</span>
                   </div>
-                  <div className="quiet-category text-xs">Estimated Wait</div>
+                  <div className="stat-label uppercase tracking-wider text-xs">Estimated Wait</div>
                 </div>
               </ScrollReveal>
             </div>
@@ -140,19 +140,19 @@ export default function QueueToken() {
                   transition={{ repeat: Infinity, duration: 2, ease: "easeInOut", repeatDelay: 1 }}
                 />
               </div>
-              <div className="flex justify-between text-xs text-slate-500 font-medium">
+              <div className="flex justify-between text-xs font-bold text-gray-400 uppercase tracking-wider">
                 <span>Started A-100</span>
-                <span className="text-primary font-semibold">Your Token A-{myToken}</span>
+                <span className="text-primary">Your Token A-{myToken}</span>
               </div>
             </ScrollReveal>
 
             <ScrollReveal delay={0.5} className="card shadow-sm border border-gray-100 bg-gray-50/50">
               <h4 className="mb-4 text-lg font-semibold">Visit Details</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-3 bg-white rounded-lg border border-gray-100"><span className="quiet-category block mb-1">Hospital</span> <span className="font-bold text-gray-800">GMC & Rajindra Hospital, Patiala</span></div>
-                <div className="p-3 bg-white rounded-lg border border-gray-100"><span className="quiet-category block mb-1">Department</span> <span className="font-bold text-gray-800">General Medicine</span></div>
-                <div className="p-3 bg-white rounded-lg border border-gray-100"><span className="quiet-category block mb-1">Doctor</span> <span className="font-bold text-gray-800">Dr. Ananya Sharma</span></div>
-                <div className="p-3 bg-white rounded-lg border border-gray-100"><span className="quiet-category block mb-1">Room</span> <span className="font-bold text-gray-800">Consultation Room 204</span></div>
+                <div className="p-3 bg-white rounded-lg border border-gray-100"><span className="text-xs text-gray-500 uppercase tracking-wider block mb-1">Hospital</span> <span className="font-bold text-gray-800">CityCare Government</span></div>
+                <div className="p-3 bg-white rounded-lg border border-gray-100"><span className="text-xs text-gray-500 uppercase tracking-wider block mb-1">Department</span> <span className="font-bold text-gray-800">General Medicine</span></div>
+                <div className="p-3 bg-white rounded-lg border border-gray-100"><span className="text-xs text-gray-500 uppercase tracking-wider block mb-1">Doctor</span> <span className="font-bold text-gray-800">Dr. Ananya Sharma</span></div>
+                <div className="p-3 bg-white rounded-lg border border-gray-100"><span className="text-xs text-gray-500 uppercase tracking-wider block mb-1">Room</span> <span className="font-bold text-gray-800">Consultation Room 204</span></div>
               </div>
             </ScrollReveal>
           </motion.div>

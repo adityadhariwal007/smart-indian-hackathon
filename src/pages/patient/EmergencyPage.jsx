@@ -141,13 +141,13 @@ export default function EmergencyPage() {
       >
         {/* Status Bar */}
         <div className="flex flex-wrap justify-between items-center gap-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
-            <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
-            <span>Patiala Emergency Network • 24/7 Active</span>
-          </div>
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-200">
+            <span className="w-2 h-2 rounded-full bg-red-600 animate-ping" />
+            24/7 PATIALA EMERGENCY NETWORK
+          </span>
 
-          <div className="text-xs flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 text-slate-700 border border-slate-200 font-medium">
-            <MapPin size={14} className="text-slate-500" />
+          <div className="text-xs flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-50 text-slate-700 border border-slate-200 font-medium">
+            <MapPin size={13} className="text-red-600" />
             <span>{userLocation?.name || 'Patiala, Punjab'}</span>
           </div>
         </div>
@@ -155,83 +155,75 @@ export default function EmergencyPage() {
         {/* Title */}
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2.5">
-            <ShieldAlert size={24} style={{ color: 'var(--color-emergency-crimson, #DC2626)' }} />
-            Emergency Assistance & 108 Ambulance
+            <ShieldAlert size={24} className="text-red-600" />
+            Emergency Response Command
           </h1>
-          <p className="text-sm text-slate-600 mt-1">
-            Immediate dispatch connection to Patiala ALS ambulance fleet and GMC Rajindra Level-1 Trauma Bay.
+          <p className="text-sm text-slate-500 mt-1">
+            Instant connection to Patiala ALS ambulances and Rajindra Hospital Level-1 Trauma Bay.
           </p>
         </div>
 
-        {/* Category Selection - Fixed with high-contrast 44px touch targets */}
-        <div>
-          <div className="quiet-category" style={{ marginBottom: '8px' }}>
-            Reported Medical Condition
+        {/* Category Pills */}
+        <div className="space-y-2">
+          <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            Select Condition:
           </div>
-          <div className="flex flex-wrap gap-2.5" role="group" aria-label="Select condition">
-            {emergencyCategories.map(cat => {
-              const isSelected = selectedCategory === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={`emergency-condition-pill ${isSelected ? 'active' : ''}`}
-                >
-                  {cat.label}
-                </button>
-              );
-            })}
+          <div className="flex flex-wrap gap-2">
+            {emergencyCategories.map(cat => (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition border cursor-pointer ${
+                  selectedCategory === cat.id
+                    ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
+                    : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
           </div>
         </div>
 
         {/* Action Button Area */}
         <div>
           {countdown !== null ? (
-            <div className="p-5 rounded-2xl border-2 text-center space-y-3" style={{ background: '#FEF2F2', borderColor: '#DC2626' }}>
-              <div className="text-lg font-bold" style={{ color: '#991B1B' }}>
-                Requesting 108 Ambulance in {countdown} seconds...
-              </div>
-              <p className="text-xs text-slate-600 max-w-md mx-auto">
-                Triage notification and GPS coordinates are being transmitted to nearest available ambulance unit.
-              </p>
+            <div className="bg-red-50 border-2 border-red-500 p-5 rounded-xl text-center space-y-2">
+              <div className="text-xl font-bold text-red-700">Sending SOS in {countdown}s...</div>
               <button
                 onClick={cancelCountdown}
-                className="btn btn-sm"
-                style={{ background: '#FFFFFF', border: '1px solid #DC2626', color: '#DC2626', fontWeight: 700, borderRadius: '8px' }}
+                className="btn btn-sm bg-white border border-red-300 text-red-700 font-bold px-4 py-1.5 rounded-lg text-xs"
               >
-                <X size={14} /> Cancel Request
+                <X size={14} /> Cancel
               </button>
             </div>
           ) : sosActive ? (
-            <div className="p-5 rounded-2xl border space-y-3" style={{ background: '#ECFDF5', borderColor: '#059669' }}>
-              <div className="flex justify-between items-center flex-wrap gap-2">
-                <div className="flex items-center gap-2 text-sm font-bold" style={{ color: '#065F46' }}>
-                  <CheckCircle2 size={18} style={{ color: '#059669' }} />
-                  Ambulance Dispatched • Unit ALS-04 En Route (~6 min ETA)
+            <div className="bg-emerald-50 border border-emerald-400 p-4 rounded-xl space-y-3">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2 text-sm font-bold text-emerald-900">
+                  <CheckCircle2 size={18} className="text-emerald-600" />
+                  SOS Dispatched • Unit ALS-04 En Route (~6 min)
                 </div>
                 <button
                   onClick={() => setSosActive(false)}
-                  className="btn btn-xs"
-                  style={{ background: '#FFFFFF', border: '1px solid #CBD5E1', color: '#475569', borderRadius: '6px' }}
+                  className="btn btn-xs bg-white text-slate-600 border border-slate-200 text-xs px-2.5 py-1"
                 >
-                  Cancel Request
+                  Stand Down
                 </button>
               </div>
-              <div className="flex gap-2.5 flex-wrap pt-1">
+              <div className="flex gap-2">
                 <button
-                  className="btn btn-sm"
-                  style={{ background: '#059669', color: '#FFFFFF', fontWeight: 700, borderRadius: '8px' }}
+                  className="btn btn-sm bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg px-3"
                   onClick={() => navigate('/patient/ambulance')}
                 >
-                  <Radio size={14} /> Track Ambulance GPS
+                  <Radio size={14} /> Live Map
                 </button>
                 <a
                   href="tel:108"
-                  className="btn btn-sm"
-                  style={{ background: '#FFFFFF', color: '#1E293B', border: '1px solid #CBD5E1', fontWeight: 600, borderRadius: '8px' }}
+                  className="btn btn-sm bg-white text-slate-800 border border-slate-300 font-semibold text-xs rounded-lg px-3"
                 >
-                  <Phone size={13} /> Speak to Paramedic Crew
+                  <Phone size={13} /> Call Crew
                 </a>
               </div>
             </div>
@@ -240,41 +232,26 @@ export default function EmergencyPage() {
               <button
                 type="button"
                 onClick={handleInitiateSOS}
-                style={{
-                  background: 'var(--color-emergency-crimson, #DC2626)',
-                  color: '#FFFFFF',
-                  fontWeight: 700,
-                  fontSize: '14px',
-                  padding: '12px 24px',
-                  borderRadius: '12px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  cursor: 'pointer',
-                  border: 'none',
-                  boxShadow: '0 4px 14px rgba(220, 38, 38, 0.35)'
-                }}
+                className="px-5 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold transition flex items-center gap-2 text-sm cursor-pointer shadow-xs active:scale-95"
               >
                 <AlertTriangle size={18} />
-                <span>Request Immediate Ambulance (108)</span>
+                <span>ACTIVATE INSTANT SOS DISPATCH</span>
               </button>
 
               <button
                 onClick={handleCopyCoords}
-                className="btn btn-sm"
-                style={{ background: '#F1F5F9', border: '1px solid #CBD5E1', color: '#1E293B', borderRadius: '12px', padding: '10px 16px' }}
+                className="btn btn-sm bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 rounded-xl text-xs py-2.5 px-3 font-medium cursor-pointer"
               >
-                {copiedCoords ? <Check size={14} style={{ color: '#059669' }} /> : <Copy size={14} />}
-                <span>{copiedCoords ? 'GPS Copied' : 'Copy GPS'}</span>
+                {copiedCoords ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
+                <span>{copiedCoords ? 'Copied' : 'Copy GPS'}</span>
               </button>
 
               <button
                 onClick={handleShareWhatsApp}
-                className="btn btn-sm"
-                style={{ background: '#059669', color: '#FFFFFF', borderRadius: '12px', padding: '10px 16px', fontWeight: 600 }}
+                className="btn btn-sm bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs py-2.5 px-3 font-medium shadow-xs cursor-pointer"
               >
                 <Share2 size={14} />
-                <span>Share via WhatsApp</span>
+                <span>WhatsApp</span>
               </button>
             </div>
           )}

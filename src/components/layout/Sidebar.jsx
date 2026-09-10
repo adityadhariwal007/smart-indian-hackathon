@@ -101,6 +101,25 @@ export default function Sidebar() {
       </nav>
 
       <div className="sidebar-footer">
+        {!collapsed && user.role !== 'patient' && (
+          <div className="role-switcher">
+            <span className="role-label">Switch Role</span>
+            <div className="role-buttons">
+              {['patient', 'doctor', 'admin'].map(role => (
+                <button
+                  key={role}
+                  className={`role-btn ${user.role === role ? 'active' : ''}`}
+                  onClick={() => {
+                    switchRole(role);
+                    navigate(`/${role}`);
+                  }}
+                >
+                  {role.charAt(0).toUpperCase() + role.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
         <button className="sidebar-link logout-btn" onClick={handleLogout}>
           <LogOut size={20} />
           {!collapsed && <span>Logout</span>}
