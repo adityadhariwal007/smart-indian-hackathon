@@ -3,7 +3,8 @@ import { useAuth } from '../../context/AuthContext';
 import {
   LayoutDashboard, Search, UserSearch, ListOrdered, Ambulance, Calculator,
   Calendar, Bell, User, Users, Clock, Activity, Building2, Stethoscope,
-  BarChart3, Settings, TrendingUp, Truck, HeartPulse, LogOut, ChevronLeft, Sparkles, Video
+  BarChart3, Settings, TrendingUp, Truck, HeartPulse, LogOut, ChevronLeft, Sparkles, Video,
+  ShieldAlert
 } from 'lucide-react';
 import { useState } from 'react';
 import './Sidebar.css';
@@ -17,6 +18,7 @@ const navGroups = {
         { path: '/patient/hospitals', icon: Building2, label: 'Find Hospital' },
         { path: '/patient/appointments', icon: Calendar, label: 'Appointments' },
         { path: '/patient/consultation', icon: Video, label: 'Online Consult' },
+        { path: '/patient/complaints', icon: ShieldAlert, label: 'Grievances' },
         { path: '/patient/emergency', icon: Ambulance, label: 'Emergency SOS' },
       ],
     },
@@ -40,6 +42,7 @@ const navGroups = {
         { path: '/admin/departments', icon: Building2, label: 'Departments' },
         { path: '/admin/doctors', icon: Stethoscope, label: 'Doctors' },
         { path: '/admin/analytics', icon: BarChart3, label: 'Analytics' },
+        { path: '/admin/complaints', icon: ShieldAlert, label: 'Grievances' },
       ],
     },
   ],

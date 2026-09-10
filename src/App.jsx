@@ -24,6 +24,7 @@ import MapView from './pages/patient/MapView';
 import NotificationsPage from './pages/patient/NotificationsPage';
 import ProfilePage from './pages/patient/ProfilePage';
 import OnlineConsultation from './pages/patient/OnlineConsultation';
+import ComplaintsPage from './pages/patient/ComplaintsPage';
 
 // Doctor Pages
 import DoctorDashboard from './pages/doctor/DoctorDashboard';
@@ -44,6 +45,7 @@ import AdminAmbulances from './pages/admin/AdminAmbulances';
 import AdminAnalytics from './pages/admin/AdminAnalytics';
 import ResourceAllocation from './pages/admin/ResourceAllocation';
 import AdminSettings from './pages/admin/AdminSettings';
+import AdminComplaints from './pages/admin/AdminComplaints';
 
 export default function App() {
   return (
@@ -52,6 +54,7 @@ export default function App() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/book-appointment" element={<Navigate to="/patient" replace />} />
+      <Route path="/complaints" element={<Navigate to="/patient/complaints" replace />} />
       <Route path="/signup" element={<PatientSignupPage />} />
       <Route path="/patient/signup" element={<PatientSignupPage />} />
       <Route path="/effects" element={<DashboardLayout />}>
@@ -78,6 +81,7 @@ export default function App() {
         <Route path="notifications" element={<NotificationsPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="consultation" element={<OnlineConsultation />} />
+        <Route path="complaints" element={<ComplaintsPage />} />
       </Route>
 
       {/* Doctor Portal Routes */}
@@ -103,6 +107,7 @@ export default function App() {
         <Route path="resources" element={<ResourceAllocation />} />
         <Route path="settings" element={<AdminSettings />} />
         <Route path="profile" element={<AdminSettings />} />
+        <Route path="complaints" element={<AdminComplaints />} />
       </Route>
 
       {/* Catch-all redirect to home */}

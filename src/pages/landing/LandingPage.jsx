@@ -453,6 +453,9 @@ export default function LandingPage() {
             <a href="#directory">{t('footerDirectory')}</a>
             <a href="#stats">{t('footerNetwork')}</a>
             <a href="#features">{t('footerFeatures')}</a>
+            <button onClick={() => navigate('/patient/complaints')} className="footer-link-btn" style={{ color: '#34d399', fontWeight: 700 }}>
+              Complaint Portal
+            </button>
             <button onClick={() => navigate('/patient/emergency')} className="footer-link-emergency">
               {t('emergencySos')}
             </button>

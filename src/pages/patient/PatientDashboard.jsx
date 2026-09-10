@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import {
   Building2, Calendar, Clock, Ticket, ArrowRight, MapPin,
   Star, ShieldCheck, AlertTriangle, Search, CheckCircle2,
-  ChevronRight, Phone
+  ChevronRight, Phone, ShieldAlert
 } from 'lucide-react';
 import hospitals, { getCrowdLabel, getCrowdColor } from '../../data/hospitals';
 import BookAppointmentModal from '../../components/patient/BookAppointmentModal';
@@ -96,6 +96,26 @@ export default function PatientDashboard() {
                   <span className="emergency-live-pulse" />
                   <AlertTriangle size={16} />
                   <span>Emergency SOS</span>
+                </button>
+
+                <button
+                  className="btn"
+                  style={{
+                    borderRadius: '9999px',
+                    padding: '12px 22px',
+                    fontWeight: 600,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    background: 'rgba(255, 255, 255, 0.12)',
+                    color: '#ffffff',
+                    border: '1px solid rgba(255, 255, 255, 0.25)',
+                    backdropFilter: 'blur(8px)'
+                  }}
+                  onClick={() => navigate('/patient/complaints')}
+                >
+                  <ShieldAlert size={16} />
+                  <span>Grievance Portal</span>
                 </button>
               </div>
             )}
