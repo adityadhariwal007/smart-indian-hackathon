@@ -422,46 +422,36 @@ export const saveComplaints = (complaints) => {
 // Submit a new complaint with full validation
 export const createComplaint = async (formData, currentUser = null) => {
   // Artificial latency simulation for realistic async experience
-  await new Promise(r => setTimeout(r, 650));
+  await new Promise(r => setTimeout(r, 450));
 
-  // Server-like validation
+  // Streamlined, user-friendly validation
   const errors = {};
-  if (!formData.fullName || formData.fullName.trim().length < 2) {
-    errors.fullName = 'Please enter your full name (at least 2 characters).';
+  const name = (formData.fullName || currentUser?.name || '').trim();
+  if (!name || name.length < 2) {
+    errors.fullName = 'Please enter your name.';
   }
-  if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
-    errors.email = 'Please provide a valid email address.';
-  }
-  if (!formData.phone || !/^[6-9]\d{9}$/.test(formData.phone.replace(/[\s+-]/g, '').slice(-10))) {
-    errors.phone = 'Please provide a valid 10-digit mobile number.';
-  }
-  if (!formData.hospitalName) {
-    errors.hospitalName = 'Please select the relevant hospital.';
-  }
-  if (!formData.category || !COMPLAINT_CATEGORIES.includes(formData.category)) {
-    errors.category = 'Please select a valid complaint category.';
-  }
-  if (!formData.subject || formData.subject.trim().length < 5) {
-    errors.subject = 'Subject must be at least 5 characters.';
-  }
-  if (!formData.description || formData.description.trim().length < 20) {
-    errors.description = 'Please provide a detailed description (minimum 20 characters).';
-  }
-  if (formData.description && formData.description.length > 2000) {
-    errors.description = 'Description exceeds the 2,000 character maximum.';
-  }
-  if (!formData.incidentDate) {
-    errors.incidentDate = 'Please select the date of the incident.';
+
+  const phone = (formData.phone || '').replace(/[\s+-]/g, '');
+  const email = (formData.email || '').trim();
+
+  if (!phone && !email) {
+    errors.phone = 'Please provide a mobile number or email.';
   } else {
-    const d = new Date(formData.incidentDate);
-    const now = new Date();
-    const oneYearAgo = new Date();
-    oneYearAgo.setFullYear(now.getFullYear() - 1);
-    if (d > now) {
-      errors.incidentDate = 'Incident date cannot be in the future.';
-    } else if (d < oneYearAgo) {
-      errors.incidentDate = 'Incident date cannot be older than 1 year.';
+    if (phone && !/^[6-9]\d{9}$/.test(phone.slice(-10))) {
+      errors.phone = 'Please provide a valid 10-digit mobile number.';
     }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errors.email = 'Please provide a valid email address.';
+    }
+  }
+
+  if (!formData.hospitalName) {
+    errors.hospitalName = 'Please select a hospital.';
+  }
+
+  const desc = (formData.description || '').trim();
+  if (!desc || desc.length < 10) {
+    errors.description = 'Please describe the issue briefly (at least 10 characters).';
   }
 
   if (Object.keys(errors).length > 0) {
@@ -469,6 +459,11 @@ export const createComplaint = async (formData, currentUser = null) => {
     err.validationErrors = errors;
     throw err;
   }
+
+  const subject = formData.subject?.trim() || desc.slice(0, 60) + (desc.length > 60 ? '...' : '');
+  const incidentDate = formData.incidentDate || new Date().toISOString().split('T')[0];
+  const department = formData.department || 'General OPD';
+  const category = formData.category || 'Hospital Service';
 
   const publicId = generatePublicComplaintId();
   const internalId = `cmp-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
@@ -478,17 +473,17 @@ export const createComplaint = async (formData, currentUser = null) => {
     id: internalId,
     publicId,
     userId: currentUser?.id || 'guest',
-    fullName: sanitizeText(formData.fullName),
-    email: sanitizeText(formData.email),
-    phone: sanitizeText(formData.phone),
-    preferredContact: formData.preferredContact || 'Email',
+    fullName: sanitizeText(name),
+    email: sanitizeText(email || currentUser?.email || 'Not provided'),
+    phone: sanitizeText(phone ? `+91 ${phone.slice(-10)}` : 'Not provided'),
+    preferredContact: formData.preferredContact || (phone ? 'Phone' : 'Email'),
     hospitalId: formData.hospitalId || null,
     hospitalName: sanitizeText(formData.hospitalName),
-    category: formData.category,
-    department: sanitizeText(formData.department || 'General Ward'),
-    subject: sanitizeText(formData.subject),
-    description: sanitizeText(formData.description),
-    incidentDate: formData.incidentDate,
+    category,
+    department: sanitizeText(department),
+    subject: sanitizeText(subject),
+    description: sanitizeText(desc),
+    incidentDate,
     status: 'Submitted',
     assignedDepartment: 'Patient Grievance Cell',
     assignedAdmin: 'Unassigned',
@@ -497,7 +492,7 @@ export const createComplaint = async (formData, currentUser = null) => {
       {
         status: 'Submitted',
         timestamp: nowISO,
-        updatedBy: `${sanitizeText(formData.fullName)} (Citizen)`,
+        updatedBy: `${sanitizeText(name)} (Citizen)`,
         role: 'patient',
         note: 'Complaint successfully filed through HealthFlow Portal.',
         isInternal: false,
