@@ -4,7 +4,7 @@ import {
   LayoutDashboard, Search, UserSearch, ListOrdered, Ambulance, Calculator,
   Calendar, Bell, User, Users, Clock, Activity, Building2, Stethoscope,
   BarChart3, Settings, TrendingUp, Truck, HeartPulse, LogOut, ChevronLeft, Sparkles, Video,
-  ShieldAlert
+  ShieldAlert, ShieldCheck
 } from 'lucide-react';
 import { useState } from 'react';
 import './Sidebar.css';
