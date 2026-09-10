@@ -20,6 +20,8 @@ import DoctorProfile from './pages/patient/DoctorProfile';
 import ExpertiseSearch from './pages/patient/ExpertiseSearch';
 import QueueToken from './pages/patient/QueueToken';
 import AmbulancePage from './pages/patient/AmbulancePage';
+import LiveAmbulanceTracking from './pages/patient/LiveAmbulanceTracking';
+import DriverTripPage from './pages/ambulance/DriverTripPage';
 import EmergencyPage from './pages/patient/EmergencyPage';
 import CostEstimator from './pages/patient/CostEstimator';
 import SchemesPage from './pages/patient/SchemesPage';
@@ -67,6 +69,10 @@ export default function App() {
       <Route path="/portal" element={<Navigate to="/patient/portal" replace />} />
       <Route path="/signup" element={<PatientSignupPage />} />
       <Route path="/patient/signup" element={<PatientSignupPage />} />
+      <Route path="/live-tracking/:tripId" element={<DashboardLayout />}><Route index element={<LiveAmbulanceTracking />} /></Route>
+      <Route path="/live-tracking" element={<DashboardLayout />}><Route index element={<LiveAmbulanceTracking />} /></Route>
+      <Route path="/driver/trip/:tripId" element={<DashboardLayout />}><Route index element={<DriverTripPage />} /></Route>
+      <Route path="/driver/trip" element={<DashboardLayout />}><Route index element={<DriverTripPage />} /></Route>
       <Route path="/effects" element={<DashboardLayout />}>
         <Route index element={<EffectsShowcase />} />
       </Route>
@@ -83,6 +89,8 @@ export default function App() {
         <Route path="expertise" element={<ExpertiseSearch />} />
         <Route path="queue" element={<QueueToken />} />
         <Route path="ambulance" element={<AmbulancePage />} />
+        <Route path="ambulance/track/:tripId" element={<LiveAmbulanceTracking />} />
+        <Route path="ambulance/track" element={<LiveAmbulanceTracking />} />
         <Route path="emergency" element={<EmergencyPage />} />
         <Route path="cost" element={<CostEstimator />} />
         <Route path="schemes" element={<SchemesPage />} />

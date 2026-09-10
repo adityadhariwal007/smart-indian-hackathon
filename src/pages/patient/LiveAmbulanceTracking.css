@@ -1,0 +1,51 @@
+/* ==========================================================================
+   Live Ambulance Tracking View Styling
+   ========================================================================== */
+
+.live-tracking-page {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.step-timeline-indicator {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.step-timeline-indicator.completed {
+  background: #059669;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.3);
+}
+
+.step-timeline-indicator.active {
+  background: #ef4444;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.25);
+  animation: pulse 1.5s infinite;
+}
+
+.step-timeline-indicator.pending {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+}
+
+.tracking-map-container {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .live-tracking-page {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}

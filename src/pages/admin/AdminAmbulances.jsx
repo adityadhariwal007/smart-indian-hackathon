@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Truck, Phone, MapPin, AlertCircle, CheckCircle2, Search, Filter } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Truck, Phone, MapPin, AlertCircle, CheckCircle2, Search, Filter, Radio } from 'lucide-react';
 import ambulancesData from '../../data/ambulances';
 
 export default function AdminAmbulances() {
@@ -137,7 +138,16 @@ export default function AdminAmbulances() {
               </div>
             </div>
 
-            <div className="pt-2 border-t flex justify-end">
+            <div className="pt-2 border-t flex justify-end gap-2 items-center">
+              {amb.status === 'Dispatched' && (
+                <Link
+                  to="/live-tracking/EMS-DEMO-108"
+                  className="btn btn-xs btn-outline flex items-center gap-1 text-emerald-600 border-emerald-300"
+                >
+                  <Radio size={12} className="animate-pulse" />
+                  <span>Track Live</span>
+                </Link>
+              )}
               {amb.status !== 'Maintenance' && (
                 <button
                   className={`btn btn-xs ${amb.status === 'Available' ? 'btn-primary' : 'btn-ghost text-danger border'}`}

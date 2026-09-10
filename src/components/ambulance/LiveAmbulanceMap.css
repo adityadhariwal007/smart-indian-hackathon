@@ -1,0 +1,350 @@
+/* ==========================================================================
+   Live Ambulance Map & Animated Marker Styling
+   ========================================================================== */
+
+.live-ambulance-map-wrapper {
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(15, 23, 42, 0.06);
+  background: #f1f5f9;
+}
+
+.live-leaflet-viewport {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Loading & Error States */
+.live-map-loading-container,
+.live-map-error-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.live-map-spinner-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.live-spinner-icon {
+  font-size: 38px;
+  animation: bounce 1s infinite alternate;
+}
+
+.pulse-beacon {
+  position: absolute;
+  top: 10px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.25);
+  animation: ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Floating Telematics HUD Overlay */
+.live-telemetry-hud {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 14px;
+  padding: 12px 16px;
+  box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.15), 0 0 0 1px rgba(15, 23, 42, 0.08);
+  max-width: 360px;
+  width: calc(100% - 32px);
+  transition: all 0.3s ease;
+}
+
+.hud-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  padding-bottom: 8px;
+}
+
+.hud-status-indicator {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.hud-status-indicator.online {
+  background: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+  animation: pulse 1.5s infinite;
+}
+
+.hud-status-indicator.offline {
+  background: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25);
+}
+
+.hud-badge-code {
+  font-size: 11px;
+  font-weight: 700;
+  background: #0f172a;
+  color: #f8fafc;
+  padding: 2px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+}
+
+.hud-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.hud-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hud-label {
+  display: block;
+  font-size: 9px;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.4px;
+  line-height: 1.1;
+}
+
+.hud-value {
+  font-size: 14px;
+  line-height: 1.2;
+  margin: 0;
+}
+
+/* Map Floating Control Buttons */
+.live-map-controls-float {
+  position: absolute;
+  bottom: 24px;
+  right: 16px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.map-ctrl-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  padding: 8px 12px;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.map-ctrl-btn:hover {
+  background: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
+}
+
+.map-ctrl-btn.active {
+  background: #ecfdf5;
+  border-color: #10b981;
+  color: #047857;
+}
+
+/* ==========================================================================
+   AMBULANCE VEHICLE MARKER & EMERGENCY SIREN LIGHTS
+   ========================================================================== */
+
+.ambulance-vehicle-leaflet-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.ambulance-marker-container {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-origin: center center;
+}
+
+.ambulance-marker-body {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 4px 8px rgba(15, 23, 42, 0.35));
+}
+
+.ambulance-svg-icon {
+  width: 34px;
+  height: 34px;
+}
+
+.ambulance-bearing-arrow {
+  position: absolute;
+  top: -9px;
+  font-size: 10px;
+  color: #ef4444;
+  line-height: 1;
+  font-weight: bold;
+}
+
+/* Emergency Strobe Light Flashes (Red & Blue alternating) */
+.siren-beacon-pulse {
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.siren-beacon-pulse.red-siren {
+  border: 2px solid #ef4444;
+  background: rgba(239, 68, 68, 0.2);
+  animation: strobeRed 1.2s cubic-bezier(0.1, 0, 0.3, 1) infinite;
+}
+
+.siren-beacon-pulse.blue-siren {
+  border: 2px solid #3b82f6;
+  background: rgba(59, 130, 246, 0.2);
+  animation: strobeBlue 1.2s cubic-bezier(0.1, 0, 0.3, 1) infinite;
+  animation-delay: 0.6s;
+}
+
+@keyframes strobeRed {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  50% { transform: scale(1.6); opacity: 0; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+@keyframes strobeBlue {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  50% { transform: scale(1.6); opacity: 0; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* Destination Hospital Marker */
+.hospital-leaflet-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.hospital-marker-wrapper {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hospital-pulse-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid #10b981;
+  background: rgba(16, 185, 129, 0.15);
+  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.hospital-marker-core {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffffff;
+  box-shadow: 0 4px 12px rgba(4, 120, 87, 0.4);
+}
+
+.hospital-emoji {
+  font-size: 20px;
+}
+
+/* Pickup Marker */
+.pickup-leaflet-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.pickup-marker-wrapper {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pickup-marker-core {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffffff;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+}
+
+.pickup-emoji {
+  font-size: 18px;
+}
+
+/* Custom Leaflet Popup Styling */
+.custom-leaflet-popup .leaflet-popup-content-wrapper {
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.2);
+  padding: 4px;
+}
+
+.custom-leaflet-popup .leaflet-popup-tip {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 640px) {
+  .live-telemetry-hud {
+    top: 10px;
+    left: 10px;
+    width: calc(100% - 20px);
+    padding: 10px;
+  }
+  .hud-stats-grid {
+    gap: 6px;
+  }
+  .hud-value {
+    font-size: 12px;
+  }
+  .map-ctrl-btn span {
+    display: none;
+  }
+}

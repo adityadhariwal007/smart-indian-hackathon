@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import L from 'leaflet';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -102,6 +103,13 @@ export default function AmbulancePage() {
           <span className="text-xs text-secondary hidden md:inline">| GPS Priority Corridor Active</span>
         </div>
         <div className="flex items-center gap-3">
+          <Link
+            to="/patient/ambulance/track/EMS-DEMO-108"
+            className="btn btn-primary btn-sm flex items-center gap-2"
+            style={{ minHeight: '44px', padding: '0 16px', fontWeight: 600 }}
+          >
+            <Radio size={16} className="animate-pulse" /> Live Map (WebSocket)
+          </Link>
           <a 
             href="tel:112" 
             className="btn btn-danger btn-sm flex items-center gap-2"
