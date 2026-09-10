@@ -321,33 +321,67 @@ export default function HospitalSearch() {
                   )}
                 </div>
 
-                <div className="flex flex-col gap-2" style={{ alignItems: 'flex-end' }}>
-                  <div className="text-right mb-2">
+                <div className="flex flex-col gap-2.5" style={{ alignItems: 'flex-end', justifyContent: 'center', minWidth: '160px' }}>
+                  <div className="text-right mb-1">
                     <div className="text-xs text-secondary">Consultation Fee</div>
                     <div className="font-bold text-lg" style={{ color: '#059669' }}>
                       ₹{hospital.consultation_fee || 200}
                     </div>
-                    <div className="text-xs text-secondary" style={{ fontSize: '10px' }}>
-                      Range: ₹200–₹500
-                    </div>
                   </div>
+
+                  {/* Primary CTA */}
                   <button 
                     className="btn btn-primary btn-sm" 
                     onClick={() => setBookingHospital(hospital)}
-                    style={{ boxShadow: '0 2px 8px rgba(2, 132, 199, 0.3)', fontWeight: 600 }}
+                    style={{ 
+                      borderRadius: '9999px',
+                      padding: '8px 20px',
+                      fontWeight: 700,
+                      boxShadow: '0 2px 10px rgba(5, 150, 105, 0.25)',
+                      background: '#059669',
+                      borderColor: '#059669',
+                      width: '100%'
+                    }}
                   >
                     Book Appointment
                   </button>
-                  <button className="btn btn-secondary btn-sm" onClick={() => navigate(`/patient/hospitals/${hospital.id}`)}>
-                    View Hospital
-                  </button>
-                  <button className="btn btn-ghost btn-sm" onClick={() => navigate('/patient/queue')}>
-                    Get Queue Token
-                  </button>
-                  <label className="checkbox-group" style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
-                    <input type="checkbox" checked={compareList.includes(hospital.id)} onChange={() => toggleCompare(hospital.id)} />
-                    Compare
-                  </label>
+
+                  {/* Demoted Secondary Actions */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                    <button 
+                      onClick={() => navigate(`/patient/hospitals/${hospital.id}`)}
+                      style={{ 
+                        background: 'transparent',
+                        border: 'none',
+                        color: 'var(--text-secondary)',
+                        cursor: 'pointer',
+                        fontWeight: 600,
+                        padding: 0,
+                        textDecoration: 'underline'
+                      }}
+                    >
+                      View Details →
+                    </button>
+
+                    <button 
+                      onClick={() => navigate('/patient/queue')}
+                      style={{ 
+                        background: 'transparent',
+                        border: 'none',
+                        color: '#059669',
+                        cursor: 'pointer',
+                        fontWeight: 600,
+                        padding: 0
+                      }}
+                    >
+                      Queue Token
+                    </button>
+
+                    <label className="checkbox-group" style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0 }}>
+                      <input type="checkbox" checked={compareList.includes(hospital.id)} onChange={() => toggleCompare(hospital.id)} />
+                      Compare
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>

@@ -8,6 +8,7 @@ import PrivacyPolicy from './pages/legal/PrivacyPolicy';
 import TermsAndConditions from './pages/legal/TermsAndConditions';
 import NotFoundPage from './pages/NotFoundPage';
 import CookieConsent from './components/common/CookieConsent';
+import DemoControls from './components/common/DemoControls';
 import SEO from './components/common/SEO';
 
 // Patient Pages
@@ -125,6 +126,7 @@ export default function App() {
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
     <CookieConsent />
+    <DemoControls />
     <SEO />
     </>
   );

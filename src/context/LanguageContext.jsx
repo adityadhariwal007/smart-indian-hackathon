@@ -18,15 +18,15 @@ export const translations = {
     guest: 'Guest',
 
     // Hero Section
-    badge: 'SMART HEALTHCARE COORDINATION',
-    heroHeadlinePrefix: 'Behind every great patient experience',
-    heroHeadlineLies: 'lies',
-    heroSubheadline: 'Better healthcare. Less waiting. Less hassle.',
+    badge: 'Patiala Healthcare Coordination Network',
+    heroHeadlinePrefix: 'Real-time healthcare coordination across',
+    heroHeadlineLies: 'Patiala District',
+    heroSubheadline: 'Live OPD queue triage, verified bed occupancy across 20 district hospitals, and immediate 108 emergency ambulance dispatch.',
     trustAbha: 'ABHA & ABDM Verified Network',
-    trustHospitals: '20+ Connected Hospitals',
-    trustWait: '< 38 min Avg. Outpatient Wait',
-    bookAppointment: 'Book an Appointment',
-    emergencyBtn: 'Emergency',
+    trustHospitals: '20 Patiala Network Hospitals',
+    trustWait: '< 28 min Outpatient Triage',
+    bookAppointment: 'Find Care & Appointments',
+    emergencyBtn: '108 Emergency',
 
     // Cards
     card1Tag: 'PATIALA HEALTHCARE DIRECTORY',
@@ -102,15 +102,15 @@ export const translations = {
     guest: 'अतिथि',
 
     // Hero Section
-    badge: 'स्मार्ट स्वास्थ्य सेवा समन्वय',
-    heroHeadlinePrefix: 'हर बेहतरीन मरीज अनुभव के पीछे',
-    heroHeadlineLies: 'है',
-    heroSubheadline: 'बेहतर स्वास्थ्य सेवा। कम प्रतीक्षा। कम परेशानी।',
+    badge: 'पटियाला स्वास्थ्य सेवा समन्वय नेटवर्क',
+    heroHeadlinePrefix: 'रीयल-टाइम स्वास्थ्य सेवा समन्वय —',
+    heroHeadlineLies: 'पटियाला जिला',
+    heroSubheadline: 'लाइव ओपीडी ट्राइएज, 20 अस्पतालों में बेड उपलब्धता, और त्वरित 108 आपातकालीन एम्बुलेंस सेवा।',
     trustAbha: 'ABHA और ABDM सत्यापित नेटवर्क',
-    trustHospitals: '20+ जुड़े अस्पताल',
-    trustWait: '< 38 मिनट औसत ओपीडी प्रतीक्षा',
-    bookAppointment: 'अपॉइंटमेंट बुक करें',
-    emergencyBtn: 'आपातकालीन',
+    trustHospitals: '20 पटियाला नेटवर्क अस्पताल',
+    trustWait: '< 28 मिनट ओपीडी ट्राइएज',
+    bookAppointment: 'अस्पताल व अपॉइंटमेंट खोजें',
+    emergencyBtn: '108 आपातकालीन सेवा',
 
     // Cards
     card1Tag: 'पटियाला स्वास्थ्य सेवा निर्देशिका',

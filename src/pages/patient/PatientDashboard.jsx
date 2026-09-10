@@ -41,9 +41,8 @@ export default function PatientDashboard() {
         <div className="hero-painterly-backdrop" />
         <div className="hero-content" style={{ gridTemplateColumns: hasActiveBooking ? '1fr 360px' : '1fr' }}>
           <div className="hero-copy">
-            <span className="hero-eyebrow">
-              <span className="eyebrow-dot" />
-              HEALTHFLOW PATIENT PORTAL • CARE HUB
+            <span className="quiet-category" style={{ color: 'rgba(255, 255, 255, 0.85)', marginBottom: '8px' }}>
+              Patiala Outpatient Care & Triage Hub
             </span>
 
             <h1 className="hero-title">
@@ -173,8 +172,8 @@ export default function PatientDashboard() {
       <div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
           <div>
-            <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#059669' }}>
-              STEP 1: SELECT HOSPITAL • PATIALA, PUNJAB
+            <span className="quiet-category" style={{ color: '#059669', display: 'block', marginBottom: '4px' }}>
+              Patiala Healthcare Facilities
             </span>
             <h2 style={{ fontSize: '22px', fontWeight: 800, margin: '2px 0 0', color: 'var(--text-primary)' }}>
               Nearest Hospitals to You

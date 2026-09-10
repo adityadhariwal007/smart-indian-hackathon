@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   ShieldCheck, HeartPulse, User, Calendar, FileText, 
   Plus, Check, Copy, AlertCircle, LogOut, ArrowRight, 
-  Lock, CheckCircle2, Clock, Phone, Mail, Sparkles 
+  Lock, CheckCircle2, Clock, Phone, Mail, Sparkles, Info 
 } from 'lucide-react';
 import { 
   getActiveSession, 
@@ -275,14 +275,13 @@ export default function PatientPortal() {
 
   return (
     <div className="portal-wrapper">
-      {/* 1. HONESTY CLAUSE BANNER */}
-      <div className="portal-honesty-banner">
-        <AlertCircle size={20} className="shrink-0 text-amber-600 mt-0.5" />
+      {/* 1. CALM INFORMATIONAL NOTICE */}
+      <div className="notice-calm-info mb-6">
+        <Info size={18} className="shrink-0 text-slate-500 mt-0.5" />
         <div>
-          <span className="portal-honesty-tag">Important Prototype Notice</span>
-          <span>
-            This Healthcare Patient Portal is a <strong>functional demonstration prototype</strong> using client-side cryptographic hashing (SHA-256) and browser storage persistence. 
-            It is <strong>not HIPAA or ABDM production-certified</strong> unless deployed with an enterprise database, encryption-at-rest, and a certified regulatory compliance layer.
+          <span className="font-semibold text-slate-800 block mb-0.5">Prototype Demonstration Mode</span>
+          <span className="text-slate-600 text-xs leading-relaxed">
+            This portal demonstrates client-side cryptographic hashing (SHA-256) and persistent local health records. In production, this connects to the certified Ayushman Bharat Digital Mission (ABDM) national gateway.
           </span>
         </div>
       </div>
@@ -601,7 +600,7 @@ export default function PatientPortal() {
               <div className="flex items-center gap-2">
                 <ShieldCheck size={24} className="text-emerald-300" />
                 <div>
-                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-200 block">
+                  <span className="text-xs font-semibold text-emerald-100 block">
                     HealthFlow Universal Patient Record
                   </span>
                   <h2 className="text-lg font-bold text-white">{patient.fullName}</h2>
