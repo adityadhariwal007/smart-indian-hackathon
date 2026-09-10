@@ -14,6 +14,7 @@ import HealthcareLogoBanner from '../../components/common/HealthcareLogoBanner';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import LanguageToggle from '../../components/common/LanguageToggle';
+import HealthFlowAIChatModal from '../../components/chat/HealthFlowAIChatModal';
 import './LandingPage.css';
 
 const containerVariants = {
@@ -34,6 +35,7 @@ export default function LandingPage() {
   const { login, switchRole } = useAuth();
   const { t } = useLanguage();
   const { scrollY } = useScroll();
+  const [isAiChatOpen, setIsAiChatOpen] = useState(false);
 
   const handleRoleLogin = (role) => {
     login(role);
@@ -170,6 +172,59 @@ export default function LandingPage() {
               <Clock size={14} className="text-emerald-400" />
               {t('trustWait')}
             </span>
+          </motion.div>
+
+          {/* AI Chatbot Entry Point Banner */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.35 }}
+            style={{
+              margin: '0 auto 24px',
+              maxWidth: '560px',
+              width: '100%',
+              background: 'rgba(255, 255, 255, 0.08)',
+              backdropFilter: 'blur(12px)',
+              border: '1px solid rgba(52, 211, 153, 0.35)',
+              borderRadius: '16px',
+              padding: '14px 20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '12px',
+              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.25)'
+            }}
+          >
+            <div style={{ textAlign: 'left' }}>
+              <div style={{ fontSize: '15px', fontWeight: 800, color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>🤖 Talk to HealthFlow AI</span>
+                <span style={{ fontSize: '10px', background: 'rgba(52, 211, 153, 0.2)', color: '#34D399', padding: '2px 8px', borderRadius: '9999px', fontWeight: 700 }}>LIVE</span>
+              </div>
+              <p style={{ margin: '2px 0 0', fontSize: '12px', color: 'rgba(255, 255, 255, 0.85)' }}>
+                Not feeling well? Tell us what you're experiencing.
+              </p>
+            </div>
+            <button
+              onClick={() => setIsAiChatOpen(true)}
+              style={{
+                background: '#059669',
+                color: '#FFFFFF',
+                border: 'none',
+                borderRadius: '9999px',
+                padding: '9px 18px',
+                fontSize: '13px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                boxShadow: '0 2px 10px rgba(5, 150, 105, 0.45)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              <span>Start Assessment</span>
+              <ArrowRight size={14} />
+            </button>
           </motion.div>
 
           {/* Hero CTAs: Book an Appointment & Emergency */}
@@ -496,6 +551,12 @@ export default function LandingPage() {
           <p className="footer-copy">{t('footerCopy')}</p>
         </div>
       </footer>
+
+      {/* AI Symptom Assessment & Navigation Modal */}
+      <HealthFlowAIChatModal
+        isOpen={isAiChatOpen}
+        onClose={() => setIsAiChatOpen(false)}
+      />
     </div>
   );
 }

@@ -4,10 +4,11 @@ import { useAuth } from '../../context/AuthContext';
 import {
   Building2, Calendar, Clock, Ticket, ArrowRight, MapPin,
   Star, ShieldCheck, AlertTriangle, Search, CheckCircle2,
-  ChevronRight, Phone, ShieldAlert
+  ChevronRight, Phone, ShieldAlert, Bot
 } from 'lucide-react';
 import hospitals, { getCrowdLabel, getCrowdColor } from '../../data/hospitals';
 import BookAppointmentModal from '../../components/patient/BookAppointmentModal';
+import HealthFlowAIChatModal from '../../components/chat/HealthFlowAIChatModal';
 import PatialaLocationBar from '../../components/common/PatialaLocationBar';
 import { useLocationContext } from '../../context/LocationContext';
 import './PatientDashboard.css';
@@ -17,6 +18,7 @@ export default function PatientDashboard() {
   const navigate = useNavigate();
   const { userLocation, calculateHospitalDistance } = useLocationContext();
   const [bookingHospital, setBookingHospital] = useState(null);
+  const [isAiChatOpen, setIsAiChatOpen] = useState(false);
 
   // Top 4 hospitals sorted by nearest distance to patient in Patiala
   const featuredHospitals = hospitals
@@ -69,6 +71,26 @@ export default function PatientDashboard() {
 
             {!hasActiveBooking && (
               <div style={{ display: 'flex', gap: '12px', marginTop: '14px', flexWrap: 'wrap' }}>
+                <button
+                  className="btn"
+                  style={{
+                    borderRadius: '9999px',
+                    padding: '12px 24px',
+                    fontWeight: 700,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    background: '#059669',
+                    color: '#ffffff',
+                    border: '1px solid rgba(255, 255, 255, 0.25)',
+                    boxShadow: '0 4px 14px rgba(5, 150, 105, 0.45)'
+                  }}
+                  onClick={() => setIsAiChatOpen(true)}
+                >
+                  <Bot size={16} />
+                  <span>🤖 Talk to HealthFlow AI</span>
+                </button>
+
                 <button
                   className="btn btn-primary"
                   style={{ borderRadius: '9999px', padding: '12px 24px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '8px' }}
@@ -275,6 +297,12 @@ export default function PatientDashboard() {
           onClose={() => setBookingHospital(null)}
         />
       )}
+
+      {/* AI Symptom Assessment & Navigation Modal */}
+      <HealthFlowAIChatModal
+        isOpen={isAiChatOpen}
+        onClose={() => setIsAiChatOpen(false)}
+      />
     </div>
   );
 }
