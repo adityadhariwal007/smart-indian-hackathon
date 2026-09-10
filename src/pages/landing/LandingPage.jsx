@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import {
   HeartPulse, Search, TrendingUp, Stethoscope, Ambulance,
   ArrowRight, MapPin, Users, Clock, Shield, ChevronRight,
-  Activity, Zap, BarChart3, Phone, User, ShieldCheck, AlertTriangle,
+  Activity, Zap, BarChart3, Phone, User, AlertTriangle,
   Syringe, Cross, CheckCircle2, LogIn
 } from 'lucide-react';
 import { ScrollReveal, AnimatedCounter, MagneticButton } from '../../components/animations/Animations';
@@ -165,27 +165,6 @@ export default function LandingPage() {
           >
             {t('heroSubheadline')}
           </motion.p>
-          
-          {/* Live Healthcare Telemetry & Trust Badges */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="hero-trust-row"
-          >
-            <span className="trust-badge-pill">
-              <ShieldCheck size={14} className="text-emerald-400" />
-              {t('trustAbha')}
-            </span>
-            <span className="trust-badge-pill">
-              <span className="live-status-dot" />
-              {t('trustHospitals')}
-            </span>
-            <span className="trust-badge-pill">
-              <Clock size={14} className="text-emerald-400" />
-              {t('trustWait')}
-            </span>
-          </motion.div>
 
           {/* AI Chatbot Entry Point Banner */}
           <motion.div

@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import TripModel from '../models/Trip.js';
 import LocationAuditModel from '../models/LocationAudit.js';
+import CallLogModel from '../models/CallLog.js';
 
 let isMongoConnected = false;
 
@@ -8,6 +9,7 @@ let isMongoConnected = false;
 const memoryStore = {
   trips: new Map(),
   audits: [],
+  callLogs: new Map(),
 };
 
 export async function initDatabase(uri = process.env.MONGODB_URI) {
@@ -199,4 +201,87 @@ export async function getTripAuditHistory(tripId) {
   return memoryStore.audits
     .filter((a) => a.tripId === tripId)
     .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+}
+
+/**
+ * Video Consultation Call Logging Operations
+ */
+export async function createCallLog(callData) {
+  const callRecord = {
+    ...callData,
+    startTime: callData.startTime || new Date(),
+    status: callData.status || 'initiated',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  if (isMongoConnected) {
+    try {
+      const created = await CallLogModel.create(callRecord);
+      return created.toObject();
+    } catch (err) {
+      console.error('[DB] Error saving call log to Mongo:', err.message);
+    }
+  }
+
+  // Memory store fallback
+  memoryStore.callLogs.set(callData.callId, callRecord);
+  return callRecord;
+}
+
+export async function updateCallLog(callId, updateData) {
+  const now = new Date();
+
+  if (isMongoConnected) {
+    try {
+      const updated = await CallLogModel.findOneAndUpdate(
+        { callId },
+        { $set: { ...updateData, updatedAt: now } },
+        { new: true }
+      ).lean();
+      if (updated) return updated;
+    } catch (err) {
+      console.error('[DB] Error updating call log in Mongo:', err.message);
+    }
+  }
+
+  const existing = memoryStore.callLogs.get(callId);
+  if (existing) {
+    const updated = {
+      ...existing,
+      ...updateData,
+      updatedAt: now,
+    };
+    memoryStore.callLogs.set(callId, updated);
+    return updated;
+  }
+  return null;
+}
+
+export async function getCallLogById(callId) {
+  if (isMongoConnected) {
+    try {
+      const log = await CallLogModel.findOne({ callId }).lean();
+      if (log) return log;
+    } catch (err) {
+      console.error('[DB] Error fetching call log from Mongo:', err.message);
+    }
+  }
+
+  return memoryStore.callLogs.get(callId) || null;
+}
+
+export async function listCallLogs(doctorId = null) {
+  if (isMongoConnected) {
+    try {
+      const filter = doctorId ? { doctorId } : {};
+      return await CallLogModel.find(filter).sort({ createdAt: -1 }).limit(100).lean();
+    } catch (err) {
+      console.error('[DB] Error listing call logs from Mongo:', err.message);
+    }
+  }
+
+  const all = Array.from(memoryStore.callLogs.values());
+  const filtered = doctorId ? all.filter((c) => c.doctorId === doctorId) : all;
+  return filtered.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
 }

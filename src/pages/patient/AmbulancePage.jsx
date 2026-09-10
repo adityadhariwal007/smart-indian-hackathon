@@ -96,30 +96,6 @@ export default function AmbulancePage() {
 
   return (
     <div className="animate-fade-in" style={{ maxWidth: '1200px', margin: '0 auto' }}>
-      {/* 2.3 Sticky Quick Action Bar */}
-      <div className="sticky-emergency-bar mb-6 p-4 rounded-xl flex items-center justify-between flex-wrap gap-3" style={{ borderRadius: 'var(--radius-lg)' }}>
-        <div className="flex items-center gap-3">
-          <StatusPulse status="danger" label="EMERGENCY DISPATCH LINK" />
-          <span className="text-xs text-secondary hidden md:inline">| GPS Priority Corridor Active</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <Link
-            to="/patient/ambulance/track/EMS-DEMO-108"
-            className="btn btn-primary btn-sm flex items-center gap-2"
-            style={{ minHeight: '44px', padding: '0 16px', fontWeight: 600 }}
-          >
-            <Radio size={16} className="animate-pulse" /> Live Map (WebSocket)
-          </Link>
-          <a 
-            href="tel:112" 
-            className="btn btn-danger btn-sm flex items-center gap-2"
-            style={{ minHeight: '44px', padding: '0 16px', fontWeight: 600 }}
-          >
-            <Phone size={16} /> Direct SOS: 112
-          </a>
-        </div>
-      </div>
-
       <div className="page-header mb-6">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>

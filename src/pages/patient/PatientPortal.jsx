@@ -17,6 +17,7 @@ import {
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
 import GoogleAuthModal from '../../components/auth/GoogleAuthModal';
+import VideoConsultationTrigger from '../../components/patient/VideoConsultationTrigger';
 import './PatientPortal.css';
 
 // Official Google 'G' SVG
@@ -653,6 +654,11 @@ export default function PatientPortal() {
                 </span>
               </div>
             </div>
+          </div>
+
+          {/* Instant Video Teleconsultation Card */}
+          <div style={{ marginBottom: '20px' }}>
+            <VideoConsultationTrigger />
           </div>
 
           {/* PORTAL TABS */}

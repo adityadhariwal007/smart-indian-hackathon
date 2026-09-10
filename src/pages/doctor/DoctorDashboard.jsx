@@ -1,16 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import {
   Users, Clock, CheckCircle2, Play, Check, ChevronRight,
-  Stethoscope, User
+  Stethoscope, User, Video, ShieldCheck
 } from 'lucide-react';
+import consultationSocketService from '../../services/consultationSocketService';
 
 export default function DoctorDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const doctorId = user?.username || user?.id || 'aditya';
 
-  const [doctorStatus, setDoctorStatus] = useState('Available');
+  const [doctorStatus, setDoctorStatus] = useState('available');
+
+  const handleStatusChange = async (newStatus) => {
+    setDoctorStatus(newStatus);
+    await consultationSocketService.updateDoctorStatus(doctorId, newStatus);
+  };
+
   const [activeQueue, setActiveQueue] = useState([
     { token: 'C-014', name: 'Ramesh Verma', age: 54, gender: 'M', issue: 'Followup Consultation', status: 'In Consultation', time: '10:15 AM' },
     { token: 'C-015', name: 'Sunita Rao', age: 46, gender: 'F', issue: 'Routine Checkup', status: 'Waiting', time: '10:30 AM' },
@@ -60,22 +68,63 @@ export default function DoctorDashboard() {
           </p>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#f1f5f9', padding: '4px', borderRadius: '9999px', border: '1px solid #e2e8f0' }}>
           <button
             type="button"
-            className={`btn btn-sm ${doctorStatus === 'Available' ? 'btn-primary' : 'btn-secondary'}`}
-            style={{ borderRadius: '9999px', fontSize: '12px', padding: '6px 16px' }}
-            onClick={() => setDoctorStatus('Available')}
+            style={{
+              borderRadius: '9999px',
+              fontSize: '12px',
+              fontWeight: 700,
+              padding: '6px 14px',
+              border: 'none',
+              cursor: 'pointer',
+              background: doctorStatus === 'available' ? '#059669' : 'transparent',
+              color: doctorStatus === 'available' ? '#ffffff' : '#64748b',
+              boxShadow: doctorStatus === 'available' ? '0 2px 8px rgba(5, 150, 105, 0.3)' : 'none',
+              transition: 'all 0.15s ease',
+            }}
+            onClick={() => handleStatusChange('available')}
+            title="Accept incoming patient video calls"
           >
-            🟢 On Duty
+            🟢 Available
           </button>
           <button
             type="button"
-            className={`btn btn-sm ${doctorStatus === 'Break' ? 'btn-secondary' : 'btn-ghost'}`}
-            style={{ borderRadius: '9999px', fontSize: '12px', padding: '6px 14px' }}
-            onClick={() => setDoctorStatus('Break')}
+            style={{
+              borderRadius: '9999px',
+              fontSize: '12px',
+              fontWeight: 700,
+              padding: '6px 14px',
+              border: 'none',
+              cursor: 'pointer',
+              background: doctorStatus === 'busy' ? '#f59e0b' : 'transparent',
+              color: doctorStatus === 'busy' ? '#ffffff' : '#64748b',
+              boxShadow: doctorStatus === 'busy' ? '0 2px 8px rgba(245, 158, 11, 0.3)' : 'none',
+              transition: 'all 0.15s ease',
+            }}
+            onClick={() => handleStatusChange('busy')}
+            title="Mark as busy (auto-reject incoming calls)"
           >
-            ☕ Break
+            🟡 Busy
+          </button>
+          <button
+            type="button"
+            style={{
+              borderRadius: '9999px',
+              fontSize: '12px',
+              fontWeight: 700,
+              padding: '6px 14px',
+              border: 'none',
+              cursor: 'pointer',
+              background: doctorStatus === 'offline' ? '#64748b' : 'transparent',
+              color: doctorStatus === 'offline' ? '#ffffff' : '#64748b',
+              boxShadow: doctorStatus === 'offline' ? '0 2px 8px rgba(100, 116, 139, 0.3)' : 'none',
+              transition: 'all 0.15s ease',
+            }}
+            onClick={() => handleStatusChange('offline')}
+            title="Mark as offline"
+          >
+            ⚪ Offline
           </button>
         </div>
       </div>

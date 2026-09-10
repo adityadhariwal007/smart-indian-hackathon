@@ -5,7 +5,9 @@ import dotenv from 'dotenv';
 import { Server as SocketIOServer } from 'socket.io';
 import { initDatabase, saveTrip, findTripById } from './services/dbService.js';
 import { registerTrackingSockets } from './sockets/trackingSocket.js';
+import { registerConsultationSockets } from './sockets/consultationSocket.js';
 import tripsRouter from './routes/trips.js';
+import callsRouter from './routes/calls.js';
 import { getRoadRoute } from './services/routingService.js';
 
 dotenv.config();
@@ -24,11 +26,12 @@ app.use(express.json());
 // Routes
 app.use('/api/trips', tripsRouter);
 app.use('/trip', tripsRouter); // Prompt specified REST endpoint POST /trip
+app.use('/api/consultation', callsRouter);
 
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'online',
-    service: 'HealthFlow Live Ambulance Telematics & Tracking Service',
+    service: 'HealthFlow Live Telematics & WebRTC Consultation Service',
     time: new Date(),
   });
 });
@@ -46,6 +49,9 @@ const io = new SocketIOServer(server, {
 
 // Register WebSocket Telematics Handlers
 registerTrackingSockets(io);
+
+// Register Video Consultation & WebRTC Signaling Handlers
+registerConsultationSockets(io);
 
 /**
  * Seed initial demo trip if not present so developer can test immediately

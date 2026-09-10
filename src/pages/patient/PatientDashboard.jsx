@@ -10,6 +10,7 @@ import hospitals, { getCrowdLabel, getCrowdColor } from '../../data/hospitals';
 import BookAppointmentModal from '../../components/patient/BookAppointmentModal';
 import HealthFlowAIChatModal from '../../components/chat/HealthFlowAIChatModal';
 import PatialaLocationBar from '../../components/common/PatialaLocationBar';
+import VideoConsultationTrigger from '../../components/patient/VideoConsultationTrigger';
 import { useLocationContext } from '../../context/LocationContext';
 import './PatientDashboard.css';
 
@@ -90,6 +91,8 @@ export default function PatientDashboard() {
                   <Bot size={16} />
                   <span>🤖 Talk to HealthFlow AI</span>
                 </button>
+
+                <VideoConsultationTrigger compact />
 
                 <button
                   className="btn btn-primary"
@@ -207,6 +210,9 @@ export default function PatientDashboard() {
           )}
         </div>
       </section>
+
+      {/* Instant Video Teleconsultation Card */}
+      <VideoConsultationTrigger />
 
       {/* Patiala Patient Location Request & Bar */}
       <PatialaLocationBar />
