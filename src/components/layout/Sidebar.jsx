@@ -20,6 +20,7 @@ const navGroups = {
         { path: '/patient/appointments', icon: Calendar, label: 'Appointments' },
         { path: '/patient/complaints', icon: ShieldAlert, label: 'Grievances' },
         { path: '/patient/emergency', icon: Ambulance, label: 'Emergency SOS' },
+        { path: '/patient/ambulance', icon: Truck, label: 'Ambulance Tracking' },
       ],
     },
   ],

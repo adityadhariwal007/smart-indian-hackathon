@@ -163,6 +163,39 @@ export default function EmergencyPage() {
           </p>
         </div>
 
+        {/* Direct Link to Live Ambulance Tracking */}
+        <div 
+          onClick={() => navigate('/patient/ambulance')}
+          className="p-3.5 rounded-xl cursor-pointer transition flex items-center justify-between gap-3"
+          style={{
+            background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+            color: '#ffffff',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            boxShadow: '0 4px 14px rgba(0, 0, 0, 0.12)'
+          }}
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-red-600/20 border border-red-500/30 flex items-center justify-center text-lg">
+              🚑
+            </div>
+            <div>
+              <div className="text-sm font-bold text-white flex items-center gap-2">
+                <span>Live 108 Ambulance GPS Telemetry & Tracking Map</span>
+                <span className="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded-full font-extrabold">LIVE</span>
+              </div>
+              <p className="text-xs text-slate-400 m-0">
+                Inspect real-time vehicle movement, speed, route polyline, and driver contact.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            className="btn btn-sm bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-full px-3.5 py-1.5 whitespace-nowrap"
+          >
+            Track Live →
+          </button>
+        </div>
+
         {/* Category Pills */}
         <div className="space-y-2">
           <div className="text-xs font-bold uppercase tracking-wider text-slate-400">

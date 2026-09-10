@@ -60,15 +60,15 @@ const STEPS = [
 ];
 
 export default function AmbulancePage() {
-  const [requested, setRequested] = useState(false);
-  const [eta, setEta] = useState(7);
+  const [requested, setRequested] = useState(true);
+  const [eta, setEta] = useState(6);
   const [stepIndex, setStepIndex] = useState(1);
   const [lockedAnim, setLockedAnim] = useState(false);
   
-  // Real coordinates in Delhi area
-  const [ambPos, setAmbPos] = useState([28.632, 77.222]);
-  const patientPos = [28.6139, 77.2090];
-  const hospitalPos = [28.6448, 77.2167];
+  // Real coordinates in Patiala, Punjab
+  const [ambPos, setAmbPos] = useState([30.3420, 76.3910]); // Fountain Chowk / Leela Bhawan
+  const patientPos = [30.3340, 76.3830]; // Model Town, Patiala
+  const hospitalPos = [30.3256, 76.3884]; // GMC & Rajindra Hospital, Patiala
 
   const handleRequest = () => {
     setLockedAnim(true);

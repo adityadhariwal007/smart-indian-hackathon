@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import {
   Building2, Calendar, Clock, Ticket, ArrowRight, MapPin,
   Star, ShieldCheck, AlertTriangle, Search, CheckCircle2,
-  ChevronRight, Phone, ShieldAlert, Bot
+  ChevronRight, Phone, ShieldAlert, Bot, Truck
 } from 'lucide-react';
 import hospitals, { getCrowdLabel, getCrowdColor } from '../../data/hospitals';
 import BookAppointmentModal from '../../components/patient/BookAppointmentModal';
@@ -138,6 +138,26 @@ export default function PatientDashboard() {
                 >
                   <ShieldAlert size={16} />
                   <span>Grievance Portal</span>
+                </button>
+
+                <button
+                  className="btn"
+                  style={{
+                    borderRadius: '9999px',
+                    padding: '12px 22px',
+                    fontWeight: 700,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    background: '#0F172A',
+                    color: '#ffffff',
+                    border: '1px solid rgba(255, 255, 255, 0.25)',
+                    boxShadow: '0 4px 14px rgba(15, 23, 42, 0.4)'
+                  }}
+                  onClick={() => navigate('/patient/ambulance')}
+                >
+                  <Truck size={16} className="text-emerald-400" />
+                  <span>Ambulance Tracking</span>
                 </button>
               </div>
             )}
