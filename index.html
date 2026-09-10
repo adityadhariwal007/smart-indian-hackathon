@@ -2,13 +2,54 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- HTTPS Enforcement -->
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+
+    <!-- Standard Favicon Suite -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#059669" />
+
+    <!-- Primary SEO Metadata -->
     <title>HealthFlow — Smart Healthcare Coordination Platform</title>
-    <meta name="description" content="Right Hospital. Right Doctor. Right Time. Right Cost. Intelligent healthcare coordination for government and private hospitals." />
-    <!-- Preload LCP Hero Image -->
+    <meta name="title" content="HealthFlow — Smart Healthcare Coordination Platform" />
+    <meta name="description" content="Right Hospital. Right Doctor. Right Time. Right Cost. Real-time outpatient queue triage, emergency 108/112 ambulance dispatch, and ABDM health records." />
+    <meta name="keywords" content="healthcare coordination, opd queue tokens, patiala hospitals, emergency ambulance 108, abdm triage, teleconsultation" />
+    <meta name="author" content="HealthFlow Team" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://smart-indian-hackathon.vercel.app/" />
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
+    <!-- Open Graph / Facebook / LinkedIn / WhatsApp -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://smart-indian-hackathon.vercel.app/" />
+    <meta property="og:site_name" content="HealthFlow" />
+    <meta property="og:title" content="HealthFlow — Smart Healthcare Coordination Platform" />
+    <meta property="og:description" content="Better healthcare. Less waiting. Less hassle. Intelligent outpatient triage, live hospital bed occupancy, and 108/112 emergency routing." />
+    <meta property="og:image" content="https://smart-indian-hackathon.vercel.app/og-preview.png" />
+    <meta property="og:image:secure_url" content="https://smart-indian-hackathon.vercel.app/og-preview.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="HealthFlow Healthcare Coordination Network Preview" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://smart-indian-hackathon.vercel.app/" />
+    <meta name="twitter:title" content="HealthFlow — Smart Healthcare Coordination Platform" />
+    <meta name="twitter:description" content="Better healthcare. Less waiting. Less hassle. Intelligent outpatient triage and 108/112 emergency routing." />
+    <meta name="twitter:image" content="https://smart-indian-hackathon.vercel.app/og-preview.png" />
+
+    <!-- Preload LCP Hero Background -->
     <link rel="preload" as="image" href="/healthcare-bg.jpg" fetchpriority="high" />
-    <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+
+    <!-- Google Fonts: Plus Jakarta Sans & Inter with Preconnects -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet" />

@@ -167,7 +167,7 @@ export default function OnlineConsultation() {
                 <div className="relative inline-block">
                   <img
                     src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=400"
-                    alt="Dr. Ananya Sharma"
+                    alt="Dr. Ananya Sharma - Consultant Cardiologist at GMC Rajindra Hospital"
                     className="w-28 h-28 sm:w-36 sm:h-36 rounded-full object-cover border-4 border-emerald-500/80 shadow-2xl mx-auto"
                     style={{ width: '120px', height: '120px', borderRadius: '50%' }}
                   />

@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { getCrowdLabel, getCrowdColor } from '../../data/hospitals';
 import { useLocationContext } from '../../context/LocationContext';
+import { analytics } from '../../services/analytics';
 
 export default function BookAppointmentModal({ hospital, onClose }) {
   const navigate = useNavigate();
@@ -87,6 +88,14 @@ export default function BookAppointmentModal({ hospital, onClose }) {
         bookedSlot: bookingData.timeSlot,
         consultationType: bookingData.consultationType,
         token: assignedToken,
+      });
+
+      analytics.trackAppointmentBooking({
+        doctor: bookingData.specialty,
+        department: bookingData.specialty,
+        hospital: hospital.name,
+        type: bookingData.consultationMode,
+        time: bookingData.timeSlot
       });
 
       addToast(`Appointment confirmed at ${hospital.name}! Token: ${assignedToken}`, 'success');

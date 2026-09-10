@@ -10,6 +10,8 @@ import {
   COMPLAINT_CATEGORIES, 
   createComplaint 
 } from '../../services/complaintService';
+import { checkRateLimit, validateHoneypot, sanitizeInput } from '../../utils/security';
+import { analytics } from '../../services/analytics';
 
 export default function ComplaintForm({ onSuccess, onTrackComplaint }) {
   const { user } = useAuth();
@@ -25,6 +27,7 @@ export default function ComplaintForm({ onSuccess, onTrackComplaint }) {
     attachments: [],
   });
 
+  const [websiteTrap, setWebsiteTrap] = useState('');
   const [showAttachment, setShowAttachment] = useState(false);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -64,11 +67,27 @@ export default function ComplaintForm({ onSuccess, onTrackComplaint }) {
     e.preventDefault();
     if (isSubmitting) return;
 
+    // 1. Anti-spam Honeypot Validation
+    if (!validateHoneypot(websiteTrap)) {
+      addToast('Automated bot submission detected.', 'error');
+      return;
+    }
+
+    // 2. Sliding Window Rate Limiting (max 3 per 60s)
+    const rateLimit = checkRateLimit('complaint_submit', 3, 60);
+    if (!rateLimit.allowed) {
+      addToast(`Rate limit reached. Please wait ${rateLimit.retryAfterSeconds}s before submitting again.`, 'error');
+      return;
+    }
+
     const errs = {};
-    if (!formData.description.trim() || formData.description.trim().length < 10) {
+    const sanitizedDesc = sanitizeInput(formData.description);
+    const sanitizedName = sanitizeInput(formData.fullName);
+
+    if (!sanitizedDesc || sanitizedDesc.length < 10) {
       errs.description = 'Please provide a brief description (at least 10 characters).';
     }
-    if (!formData.fullName.trim()) {
+    if (!sanitizedName) {
       errs.fullName = 'Please enter your name.';
     }
     const cleanPhone = formData.phone.replace(/[\s+-]/g, '');
@@ -83,7 +102,20 @@ export default function ComplaintForm({ onSuccess, onTrackComplaint }) {
 
     setIsSubmitting(true);
     try {
-      const created = await createComplaint(formData, user);
+      const payload = {
+        ...formData,
+        description: sanitizedDesc,
+        fullName: sanitizedName
+      };
+      const created = await createComplaint(payload, user);
+      
+      analytics.trackComplaintSubmitted({
+        category: formData.category,
+        department: formData.hospitalName,
+        hasFiles: (formData.attachments || []).length > 0,
+        severity: 'normal'
+      });
+
       setSubmissionResult(created);
       addToast(`Grievance submitted! ID: ${created.publicId}`, 'success');
       if (onSuccess) onSuccess(created);
@@ -169,6 +201,18 @@ export default function ComplaintForm({ onSuccess, onTrackComplaint }) {
   // SHORT & SIMPLE FORM
   return (
     <form onSubmit={handleSubmit} className="complaint-card-box max-w-2xl mx-auto" noValidate>
+      {/* Honeypot Trap Field (Hidden from real users, filled by bots) */}
+      <input
+        type="text"
+        name="hp_website_trap"
+        value={websiteTrap}
+        onChange={e => setWebsiteTrap(e.target.value)}
+        style={{ display: 'none', position: 'absolute', left: '-9999px', opacity: 0 }}
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+      />
+
       <div className="border-b border-slate-100 pb-3 mb-5 flex justify-between items-center">
         <div>
           <h3 className="text-base font-bold text-slate-900">Report an Issue</h3>

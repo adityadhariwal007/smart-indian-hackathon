@@ -1483,4 +1483,23 @@ table tr:hover td {
   color: #ffffff !important;
 }
 
+/* Accessibility & Mobile Touch Targets (WCAG 2.1 AA & 2.5.5 Target Size) */
+button, a, input, select, textarea {
+  touch-action: manipulation;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary, #059669);
+  outline-offset: 2px;
+}
+
+@media (pointer: coarse) {
+  button:not(.btn-sm):not(.close-btn), 
+  .btn:not(.btn-sm), 
+  .nav-role-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
 

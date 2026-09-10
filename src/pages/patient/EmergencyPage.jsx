@@ -9,6 +9,7 @@ import {
 import hospitals from '../../data/hospitals';
 import { useLocationContext } from '../../context/LocationContext';
 import { useAuth } from '../../context/AuthContext';
+import { analytics } from '../../services/analytics';
 
 export default function EmergencyPage() {
   const navigate = useNavigate();
@@ -53,6 +54,11 @@ export default function EmergencyPage() {
     } else if (countdown === 0) {
       setSosActive(true);
       setCountdown(null);
+      analytics.trackEmergencyTrigger({
+        source: 'emergency_page_red_button',
+        hasLocation: Boolean(userLocation),
+        hospital: emergencyHospitals[0]?.name || 'Rajindra Trauma Center'
+      });
     }
     return () => clearTimeout(timer);
   }, [countdown]);

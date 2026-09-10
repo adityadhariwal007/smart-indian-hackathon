@@ -478,6 +478,12 @@ export default function LandingPage() {
             <button onClick={() => handleRoleLogin('admin')} className="footer-link-btn">
               {t('adminPortal')}
             </button>
+            <button onClick={() => navigate('/privacy')} className="footer-link-btn">
+              Privacy Policy
+            </button>
+            <button onClick={() => navigate('/terms')} className="footer-link-btn">
+              Terms & Conditions
+            </button>
           </div>
 
           <div className="footer-disclaimer">

@@ -331,11 +331,15 @@ export default function HospitalSearch() {
                       Range: ₹200–₹500
                     </div>
                   </div>
-                  <button className="btn btn-primary btn-sm" onClick={() => navigate(`/patient/hospitals/${hospital.id}`)}>
-                    View Hospital
-                  </button>
-                  <button className="btn btn-secondary btn-sm" onClick={() => setBookingHospital(hospital)}>
+                  <button 
+                    className="btn btn-primary btn-sm" 
+                    onClick={() => setBookingHospital(hospital)}
+                    style={{ boxShadow: '0 2px 8px rgba(2, 132, 199, 0.3)', fontWeight: 600 }}
+                  >
                     Book Appointment
+                  </button>
+                  <button className="btn btn-secondary btn-sm" onClick={() => navigate(`/patient/hospitals/${hospital.id}`)}>
+                    View Hospital
                   </button>
                   <button className="btn btn-ghost btn-sm" onClick={() => navigate('/patient/queue')}>
                     Get Queue Token

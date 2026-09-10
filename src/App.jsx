@@ -4,6 +4,11 @@ import LoginPage from './pages/auth/LoginPage';
 import PatientSignupPage from './pages/auth/PatientSignupPage';
 import DashboardLayout from './components/layout/DashboardLayout';
 import EffectsShowcase from './pages/EffectsShowcase';
+import PrivacyPolicy from './pages/legal/PrivacyPolicy';
+import TermsAndConditions from './pages/legal/TermsAndConditions';
+import NotFoundPage from './pages/NotFoundPage';
+import CookieConsent from './components/common/CookieConsent';
+import SEO from './components/common/SEO';
 
 // Patient Pages
 import PatientDashboard from './pages/patient/PatientDashboard';
@@ -50,10 +55,13 @@ import AdminComplaints from './pages/admin/AdminComplaints';
 
 export default function App() {
   return (
+    <>
     <Routes>
       {/* Public Pages */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/terms" element={<TermsAndConditions />} />
       <Route path="/book-appointment" element={<Navigate to="/patient" replace />} />
       <Route path="/complaints" element={<Navigate to="/patient/complaints" replace />} />
       <Route path="/portal" element={<Navigate to="/patient/portal" replace />} />
@@ -113,8 +121,11 @@ export default function App() {
         <Route path="complaints" element={<AdminComplaints />} />
       </Route>
 
-      {/* Catch-all redirect to home */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      {/* 404 Catch-all */}
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
+    <CookieConsent />
+    <SEO />
+    </>
   );
 }

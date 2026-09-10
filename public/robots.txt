@@ -1,0 +1,21 @@
+# HealthFlow Robots.txt
+# https://smart-indian-hackathon.vercel.app
+
+User-agent: *
+Allow: /
+Allow: /privacy
+Allow: /terms
+Allow: /login
+Allow: /patient/hospitals
+Allow: /patient/complaints
+Allow: /patient/emergency
+Allow: /patient/portal
+
+# Disallow authenticated session URLs
+Disallow: /admin/
+Disallow: /doctor/
+Disallow: /patient/queue
+Disallow: /patient/consultation
+
+# XML Sitemap
+Sitemap: https://smart-indian-hackathon.vercel.app/sitemap.xml

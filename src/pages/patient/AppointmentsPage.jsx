@@ -40,9 +40,19 @@ export default function AppointmentsPage() {
 
   return (
     <div className="animate-fade-in">
-      <div className="page-header">
-        <h1>Appointments</h1>
-        <p>View and manage your appointments.</p>
+      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+        <div>
+          <h1>Appointments</h1>
+          <p>View and manage your appointments.</p>
+        </div>
+        <button 
+          className="btn btn-primary"
+          onClick={() => navigate('/patient/hospitals')}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', boxShadow: '0 4px 14px rgba(2, 132, 199, 0.35)' }}
+        >
+          <Search size={16} />
+          <span>Book New Appointment</span>
+        </button>
       </div>
       <div className="tabs">
         <button className={`tab ${tab === 'upcoming' ? 'active' : ''}`} onClick={() => setTab('upcoming')}>Upcoming</button>

@@ -7,6 +7,9 @@ import {
   Stethoscope, User, ArrowRight, RefreshCw, KeyRound, Sparkles, Check
 } from 'lucide-react';
 import { loginOrRegisterWithGoogle, loginOrRegisterWithMobile } from '../../services/patientPortalService';
+import GoogleAuthModal from '../../components/auth/GoogleAuthModal';
+import { checkRateLimit } from '../../utils/security';
+import { analytics } from '../../services/analytics';
 import './LoginPage.css';
 
 // Official Google 'G' colored SVG
@@ -47,6 +50,7 @@ export default function LoginPage() {
   const [otpDigits, setOtpDigits] = useState(['', '', '', '', '', '']);
   const [countdown, setCountdown] = useState(30);
   const [isCounting, setIsCounting] = useState(false);
+  const [showGoogleModal, setShowGoogleModal] = useState(false);
   const [loadingGoogle, setLoadingGoogle] = useState(false);
   const [loadingOtp, setLoadingOtp] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -64,20 +68,20 @@ export default function LoginPage() {
     return () => clearInterval(timer);
   }, [isCounting, countdown]);
 
-  // Handle Google Login
-  const handleGoogleLogin = async () => {
+  // Open Google Sign-In / Sign-Up Modal
+  const handleGoogleLogin = () => {
+    setErrorMessage('');
+    setShowGoogleModal(true);
+  };
+
+  // Complete Google Authentication with chosen or created account
+  const handleSelectGoogleProfile = async (profile) => {
+    setShowGoogleModal(false);
     setLoadingGoogle(true);
     setErrorMessage('');
 
     try {
-      // Simulate Google OAuth flow
-      const mockGoogleProfile = {
-        fullName: 'Aditya Dhariwal',
-        email: 'aditya.dhariwal@gmail.com',
-        avatar: 'AD'
-      };
-
-      const account = await loginOrRegisterWithGoogle(mockGoogleProfile);
+      const account = await loginOrRegisterWithGoogle(profile);
 
       login('patient', {
         name: account.fullName,
@@ -87,11 +91,14 @@ export default function LoginPage() {
         isGuest: false
       });
 
+      analytics.trackAuth('google', 'success', { email: account.email });
+
       addToast(`Signed in as ${account.fullName} via Google!`, 'success');
       setTimeout(() => {
         navigate('/patient');
       }, 500);
     } catch (err) {
+      analytics.trackAuth('google', 'failed', { error: err.message });
       setErrorMessage(err.message || 'Google sign-in failed');
     } finally {
       setLoadingGoogle(false);
@@ -106,6 +113,13 @@ export default function LoginPage() {
     const cleanDigits = phoneNumber.replace(/\D/g, '');
     if (cleanDigits.length < 10) {
       setErrorMessage('Please enter a valid 10-digit mobile number.');
+      return;
+    }
+
+    // Rate limiting for SMS OTP requests (max 4 per 60s)
+    const limit = checkRateLimit('otp_send', 4, 60);
+    if (!limit.allowed) {
+      setErrorMessage(`Too many OTP requests. Please wait ${limit.retryAfterSeconds}s before requesting another code.`);
       return;
     }
 
@@ -192,11 +206,14 @@ export default function LoginPage() {
         isGuest: false
       });
 
+      analytics.trackAuth('mobile_otp', 'success', { phone: account.phone });
+
       addToast(`Mobile verified! Welcome, ${account.fullName}.`, 'success');
       setTimeout(() => {
         navigate('/patient');
       }, 500);
     } catch (err) {
+      analytics.trackAuth('mobile_otp', 'failed', { error: err.message });
       setErrorMessage(err.message || 'OTP verification failed');
     } finally {
       setLoadingOtp(false);
@@ -455,6 +472,13 @@ export default function LoginPage() {
           <span>ABDM & ABDM Triage Compliant • Secure OTP Verification</span>
         </div>
       </div>
+
+      {/* Google Sign-In & Sign-Up Account Chooser Modal */}
+      <GoogleAuthModal
+        isOpen={showGoogleModal}
+        onClose={() => setShowGoogleModal(false)}
+        onSelectAccount={handleSelectGoogleProfile}
+      />
     </div>
   );
 }

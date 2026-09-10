@@ -196,7 +196,7 @@ export default function DoctorOnlineConsultation() {
                 <div className="relative inline-block">
                   <img
                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400"
-                    alt={patient.name}
+                    alt={`${patient.name} - Patient clinical teleconsultation feed`}
                     className="w-28 h-28 sm:w-36 sm:h-36 rounded-full object-cover border-4 border-blue-500/80 shadow-2xl mx-auto"
                     style={{ width: '120px', height: '120px', borderRadius: '50%' }}
                   />

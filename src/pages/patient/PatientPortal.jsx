@@ -16,6 +16,7 @@ import {
 } from '../../services/patientPortalService';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
+import GoogleAuthModal from '../../components/auth/GoogleAuthModal';
 import './PatientPortal.css';
 
 // Official Google 'G' SVG
@@ -52,6 +53,7 @@ export default function PatientPortal() {
   const [portalEnteredOtp, setPortalEnteredOtp] = useState('');
   const [activeTab, setActiveTab] = useState('appointments'); // 'profile' | 'appointments' | 'records'
   const [copiedId, setCopiedId] = useState(false);
+  const [showGoogleModal, setShowGoogleModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
@@ -138,14 +140,17 @@ export default function PatientPortal() {
     }
   };
 
-  // Google Login for Portal
-  const handleGooglePortalLogin = async () => {
+  // Google Login for Portal: Open Sign-Up / Account Chooser Modal
+  const handleGooglePortalLogin = () => {
+    setErrorMsg('');
+    setShowGoogleModal(true);
+  };
+
+  const handleSelectGooglePortalProfile = async (profile) => {
+    setShowGoogleModal(false);
     setErrorMsg('');
     try {
-      const account = await loginOrRegisterWithGoogle({
-        fullName: 'Aditya Dhariwal',
-        email: 'aditya.dhariwal@gmail.com'
-      });
+      const account = await loginOrRegisterWithGoogle(profile);
       setPatient(account);
       login('patient', {
         name: account.fullName,
@@ -945,6 +950,13 @@ export default function PatientPortal() {
           )}
         </div>
       )}
+
+      {/* Google Sign-In & Sign-Up Account Chooser Modal */}
+      <GoogleAuthModal
+        isOpen={showGoogleModal}
+        onClose={() => setShowGoogleModal(false)}
+        onSelectAccount={handleSelectGooglePortalProfile}
+      />
     </div>
   );
 }
