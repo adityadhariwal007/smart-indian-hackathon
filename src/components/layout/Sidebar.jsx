@@ -18,7 +18,6 @@ const navGroups = {
         { path: '/patient/portal', icon: ShieldCheck, label: 'Health ID Portal' },
         { path: '/patient/hospitals', icon: Building2, label: 'Find Hospital' },
         { path: '/patient/appointments', icon: Calendar, label: 'Appointments' },
-        { path: '/patient/consultation', icon: Video, label: 'Online Consult' },
         { path: '/patient/complaints', icon: ShieldAlert, label: 'Grievances' },
         { path: '/patient/emergency', icon: Ambulance, label: 'Emergency SOS' },
       ],

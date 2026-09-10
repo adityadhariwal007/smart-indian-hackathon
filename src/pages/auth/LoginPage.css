@@ -3,87 +3,453 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg);
-  padding: var(--space-6);
+  background: radial-gradient(circle at 50% 20%, rgba(5, 150, 105, 0.08) 0%, #0f172a 100%);
+  padding: 32px 20px;
 }
 
 .login-container {
-  max-width: 900px;
+  max-width: 520px;
   width: 100%;
 }
 
 .login-header {
   text-align: center;
-  margin-bottom: var(--space-8);
+  margin-bottom: 24px;
 }
 
 .login-logo {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-3);
-  color: var(--primary);
+  gap: 10px;
+  color: #fff;
   font-weight: 800;
-  font-size: var(--font-2xl);
-  margin-bottom: var(--space-5);
+  font-size: 26px;
+  margin-bottom: 8px;
 }
 
 .login-header h2 {
-  margin-bottom: var(--space-2);
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 6px;
 }
 
 .login-header p {
-  color: var(--text-secondary);
+  color: #94a3b8;
+  font-size: 13px;
+  margin: 0;
+  line-height: 1.5;
 }
 
-.role-cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-5);
+/* Category Switcher Tabs */
+.login-type-tabs {
+  display: flex;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 4px;
+  margin-bottom: 20px;
+  gap: 4px;
 }
 
-.role-card {
+.login-type-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.login-type-tab.active {
+  background: #1e293b;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Patient Auth Card */
+.patient-auth-card {
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 26px;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+}
+
+.auth-error-banner {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  margin-bottom: 16px;
   text-align: center;
-  padding: var(--space-8) var(--space-5);
+}
+
+/* Google Sign-In Button */
+.google-signin-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: #ffffff;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 13px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.google-signin-btn:hover {
+  background: #f8fafc;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.google-signin-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Divider */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.auth-divider span {
+  padding: 0 12px;
+}
+
+/* Form inputs */
+.phone-auth-form,
+.otp-verification-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #cbd5e1;
+  margin-bottom: 6px;
+}
+
+.auth-input {
+  width: 100%;
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.auth-input:focus {
+  border-color: #059669;
+}
+
+.phone-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.country-code-pill {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 12px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.phone-number-input {
+  letter-spacing: 0.08em;
+  font-size: 15px;
+}
+
+.auth-hint {
+  display: block;
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+.auth-submit-btn {
+  width: 100%;
+  padding: 13px;
+  border-radius: 9999px;
+  background: #059669;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 4px;
+}
+
+.auth-submit-btn:hover:not(:disabled) {
+  background: #047857;
+  transform: translateY(-1px);
+}
+
+.auth-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* OTP Verification view */
+.otp-target-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.btn-link-edit {
+  background: transparent;
+  border: none;
+  color: #38bdf8;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* Simulated SMS Banner */
+.simulated-sms-banner {
+  background: rgba(5, 150, 105, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.sms-banner-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.sms-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #34d399;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sms-time {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+.sms-body {
+  font-size: 12px;
+  color: #ecfdf5;
+  margin-bottom: 8px;
+}
+
+.autofill-otp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #059669;
+  border: none;
+  border-radius: 9999px;
+  color: #fff;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.autofill-otp-chip:hover {
+  background: #047857;
+  transform: scale(1.02);
+}
+
+/* OTP 6-Digit input boxes */
+.otp-inputs-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.otp-digit-box {
+  width: 44px;
+  height: 52px;
+  border-radius: 12px;
+  background: #0f172a;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 20px;
+  font-weight: 800;
+  text-align: center;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.otp-digit-box:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);
+  background: #1e293b;
+}
+
+.otp-timer-row {
+  text-align: center;
+}
+
+.timer-text {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.resend-btn {
+  background: transparent;
+  border: none;
+  color: #38bdf8;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.resend-btn:hover {
+  text-decoration: underline;
+}
+
+/* Staff Roles Grid */
+.staff-roles-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.staff-card {
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-3);
+  gap: 8px;
+  transition: all 0.2s ease;
 }
 
-.role-card-icon {
-  width: 64px;
-  height: 64px;
-  border-radius: var(--radius-xl);
+.staff-card:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.staff-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 4px;
 }
 
-.role-card h3 {
-  font-size: var(--font-xl);
+.staff-card h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
 }
 
-.role-card p {
-  color: var(--text-secondary);
-  font-size: var(--font-sm);
-  line-height: 1.5;
+.staff-card p {
+  font-size: 11px;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.4;
   flex: 1;
 }
 
-.role-card-user {
-  font-size: var(--font-xs);
-  color: var(--text-tertiary);
-  background: var(--bg-secondary);
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-full);
+.staff-demo-tag {
+  font-size: 10px;
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 3px 8px;
+  border-radius: 9999px;
+  margin-top: 4px;
 }
 
-@media (max-width: 768px) {
-  .role-cards {
+/* Footer Badge */
+.auth-footer-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #94a3b8;
+  font-size: 11px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .staff-roles-grid {
     grid-template-columns: 1fr;
-    max-width: 400px;
-    margin: 0 auto;
+  }
+  .otp-digit-box {
+    width: 38px;
+    height: 46px;
+    font-size: 18px;
   }
 }

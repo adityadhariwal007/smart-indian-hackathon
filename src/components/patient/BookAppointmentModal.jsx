@@ -4,7 +4,8 @@ import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
 import {
   X, Building2, Calendar, Stethoscope, Clock, User, Phone,
-  ShieldCheck, ArrowRight, ArrowLeft, CheckCircle2, Zap
+  ShieldCheck, ArrowRight, ArrowLeft, CheckCircle2, Zap,
+  Laptop, Video, Check
 } from 'lucide-react';
 import { getCrowdLabel, getCrowdColor } from '../../data/hospitals';
 import { useLocationContext } from '../../context/LocationContext';
@@ -21,9 +22,10 @@ export default function BookAppointmentModal({ hospital, onClose }) {
   const [modalStep, setModalStep] = useState(1);
 
   const [bookingData, setBookingData] = useState({
+    consultationMode: 'offline', // 'online' | 'offline'
     specialty: 'Cardiology Consultation',
     timeSlot: 'Today - 4:30 PM (Immediate Triage)',
-    consultationType: 'In-Person OPD',
+    consultationType: 'Offline Appointment (In-Person OPD)',
   });
 
   const [patientData, setPatientData] = useState({
@@ -35,6 +37,24 @@ export default function BookAppointmentModal({ hospital, onClose }) {
   const [submitting, setSubmitting] = useState(false);
 
   if (!hospital) return null;
+
+  const handleSelectMode = (mode) => {
+    if (mode === 'online') {
+      setBookingData({
+        ...bookingData,
+        consultationMode: 'online',
+        consultationType: 'Online Tele-Consult',
+        timeSlot: 'Today - 4:30 PM (HD Video Call)'
+      });
+    } else {
+      setBookingData({
+        ...bookingData,
+        consultationMode: 'offline',
+        consultationType: 'In-Person OPD',
+        timeSlot: 'Today - 4:30 PM (Immediate Triage)'
+      });
+    }
+  };
 
   const handleNextToSignUp = (e) => {
     e.preventDefault();
@@ -65,6 +85,7 @@ export default function BookAppointmentModal({ hospital, onClose }) {
         hospitalId: hospital.id,
         preferredSpecialty: bookingData.specialty,
         bookedSlot: bookingData.timeSlot,
+        consultationType: bookingData.consultationType,
         token: assignedToken,
       });
 
@@ -86,7 +107,7 @@ export default function BookAppointmentModal({ hospital, onClose }) {
         className="card animate-fade-in"
         onClick={(e) => e.stopPropagation()}
         style={{
-          maxWidth: '520px', width: '100%',
+          maxWidth: '560px', width: '100%', maxHeight: '92vh', overflowY: 'auto',
           background: '#1e293b', border: '1px solid rgba(255, 255, 255, 0.15)',
           borderRadius: '24px', padding: '28px', color: '#fff',
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
@@ -107,7 +128,7 @@ export default function BookAppointmentModal({ hospital, onClose }) {
         </button>
 
         {/* Step Indicator Header */}
-        <div style={{ marginBottom: '20px' }}>
+        <div style={{ marginBottom: '18px' }}>
           <span style={{
             fontSize: '11px', fontWeight: 700, letterSpacing: '0.1em',
             textTransform: 'uppercase', color: '#c084fc'
@@ -130,7 +151,7 @@ export default function BookAppointmentModal({ hospital, onClose }) {
           border: '1px solid rgba(16, 185, 129, 0.35)',
           borderRadius: '14px', padding: '12px 16px',
           display: 'flex', alignItems: 'center', gap: '12px',
-          marginBottom: '20px'
+          marginBottom: '18px'
         }}>
           <div style={{
             width: '36px', height: '36px', borderRadius: '10px',
@@ -158,6 +179,216 @@ export default function BookAppointmentModal({ hospital, onClose }) {
         {/* STEP 1: Department & Slot */}
         {modalStep === 1 && (
           <form onSubmit={handleNextToSignUp} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            
+            {/* Consultation Mode Selection (Online vs Offline) */}
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <div>
+                  <div style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#38bdf8' }}>
+                    Consultation Mode
+                  </div>
+                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#f8fafc' }}>
+                    How would you like to book?
+                  </div>
+                </div>
+                <span style={{ fontSize: '11px', color: '#94a3b8' }}>Choose one option</span>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
+                {/* Online Appointment Card */}
+                <div
+                  onClick={() => handleSelectMode('online')}
+                  role="button"
+                  tabIndex={0}
+                  style={{
+                    cursor: 'pointer',
+                    borderRadius: '16px',
+                    padding: '14px',
+                    background: bookingData.consultationMode === 'online'
+                      ? 'linear-gradient(135deg, rgba(2, 132, 199, 0.22) 0%, rgba(15, 23, 42, 0.8) 100%)'
+                      : 'rgba(15, 23, 42, 0.45)',
+                    border: bookingData.consultationMode === 'online'
+                      ? '2px solid #0284c7'
+                      : '1px solid rgba(255, 255, 255, 0.1)',
+                    boxShadow: bookingData.consultationMode === 'online'
+                      ? '0 0 16px rgba(2, 132, 199, 0.3)'
+                      : 'none',
+                    transition: 'all 0.2s ease',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    position: 'relative'
+                  }}
+                >
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                      <span style={{
+                        fontSize: '10px',
+                        fontWeight: 700,
+                        letterSpacing: '0.05em',
+                        padding: '3px 8px',
+                        borderRadius: '9999px',
+                        background: 'rgba(2, 132, 199, 0.2)',
+                        color: '#38bdf8',
+                        border: '1px solid rgba(56, 189, 248, 0.35)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}>
+                        <Video size={11} /> TELE-CONSULTATION
+                      </span>
+                      <div style={{
+                        width: '18px',
+                        height: '18px',
+                        borderRadius: '50%',
+                        border: bookingData.consultationMode === 'online' ? '2px solid #0284c7' : '2px solid rgba(255,255,255,0.25)',
+                        background: bookingData.consultationMode === 'online' ? '#0284c7' : 'transparent',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#fff'
+                      }}>
+                        {bookingData.consultationMode === 'online' && <Check size={11} strokeWidth={3} />}
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
+                      <div style={{
+                        width: '34px',
+                        height: '34px',
+                        borderRadius: '10px',
+                        background: '#0284c7',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#fff',
+                        flexShrink: 0
+                      }}>
+                        <Laptop size={18} />
+                      </div>
+                      <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: '#fff' }}>
+                        Online Appointment
+                      </h4>
+                    </div>
+
+                    <p style={{ fontSize: '11px', color: '#94a3b8', margin: '0 0 10px', lineHeight: 1.35 }}>
+                      Book your appointment digitally from anywhere.
+                    </p>
+                  </div>
+
+                  <div style={{
+                    fontSize: '11px',
+                    fontWeight: 600,
+                    color: bookingData.consultationMode === 'online' ? '#38bdf8' : '#64748b',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    paddingTop: '6px',
+                    borderTop: '1px solid rgba(255, 255, 255, 0.08)'
+                  }}>
+                    <span>Book Online</span>
+                    <ArrowRight size={12} />
+                  </div>
+                </div>
+
+                {/* Offline Appointment Card */}
+                <div
+                  onClick={() => handleSelectMode('offline')}
+                  role="button"
+                  tabIndex={0}
+                  style={{
+                    cursor: 'pointer',
+                    borderRadius: '16px',
+                    padding: '14px',
+                    background: bookingData.consultationMode === 'offline'
+                      ? 'linear-gradient(135deg, rgba(5, 150, 105, 0.22) 0%, rgba(15, 23, 42, 0.8) 100%)'
+                      : 'rgba(15, 23, 42, 0.45)',
+                    border: bookingData.consultationMode === 'offline'
+                      ? '2px solid #059669'
+                      : '1px solid rgba(255, 255, 255, 0.1)',
+                    boxShadow: bookingData.consultationMode === 'offline'
+                      ? '0 0 16px rgba(5, 150, 105, 0.3)'
+                      : 'none',
+                    transition: 'all 0.2s ease',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    position: 'relative'
+                  }}
+                >
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                      <span style={{
+                        fontSize: '10px',
+                        fontWeight: 700,
+                        letterSpacing: '0.05em',
+                        padding: '3px 8px',
+                        borderRadius: '9999px',
+                        background: 'rgba(5, 150, 105, 0.2)',
+                        color: '#34d399',
+                        border: '1px solid rgba(52, 211, 153, 0.35)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}>
+                        <Building2 size={11} /> IN-PERSON VISIT
+                      </span>
+                      <div style={{
+                        width: '18px',
+                        height: '18px',
+                        borderRadius: '50%',
+                        border: bookingData.consultationMode === 'offline' ? '2px solid #059669' : '2px solid rgba(255,255,255,0.25)',
+                        background: bookingData.consultationMode === 'offline' ? '#059669' : 'transparent',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#fff'
+                      }}>
+                        {bookingData.consultationMode === 'offline' && <Check size={11} strokeWidth={3} />}
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
+                      <div style={{
+                        width: '34px',
+                        height: '34px',
+                        borderRadius: '10px',
+                        background: '#059669',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#fff',
+                        flexShrink: 0
+                      }}>
+                        <Building2 size={18} />
+                      </div>
+                      <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: '#fff' }}>
+                        Offline Appointment
+                      </h4>
+                    </div>
+
+                    <p style={{ fontSize: '11px', color: '#94a3b8', margin: '0 0 10px', lineHeight: 1.35 }}>
+                      Choose a nearby centre and book your visit.
+                    </p>
+                  </div>
+
+                  <div style={{
+                    fontSize: '11px',
+                    fontWeight: 600,
+                    color: bookingData.consultationMode === 'offline' ? '#34d399' : '#64748b',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    paddingTop: '6px',
+                    borderTop: '1px solid rgba(255, 255, 255, 0.08)'
+                  }}>
+                    <span>Book Offline</span>
+                    <ArrowRight size={12} />
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div>
               <label style={{ fontSize: '12px', fontWeight: 600, color: '#cbd5e1', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
                 <Stethoscope size={14} /> Department / Specialty
@@ -187,10 +418,21 @@ export default function BookAppointmentModal({ hospital, onClose }) {
                 value={bookingData.timeSlot}
                 onChange={(e) => setBookingData({ ...bookingData, timeSlot: e.target.value })}
               >
-                <option value="Today - 4:30 PM (Immediate Triage)">Today - 4:30 PM (Immediate Triage)</option>
-                <option value="Today - 6:00 PM (Evening OPD)">Today - 6:00 PM (Evening OPD)</option>
-                <option value="Tomorrow - 10:00 AM (Morning Slot)">Tomorrow - 10:00 AM (Morning Slot)</option>
-                <option value="Tomorrow - 2:30 PM (Afternoon Slot)">Tomorrow - 2:30 PM (Afternoon Slot)</option>
+                {bookingData.consultationMode === 'online' ? (
+                  <>
+                    <option value="Today - 4:30 PM (HD Video Call)">Today - 4:30 PM (HD Video Call)</option>
+                    <option value="Today - 6:00 PM (Audio / Video Consult)">Today - 6:00 PM (Audio / Video Consult)</option>
+                    <option value="Tomorrow - 10:00 AM (Virtual Room)">Tomorrow - 10:00 AM (Virtual Room)</option>
+                    <option value="Tomorrow - 2:30 PM (Online Slot)">Tomorrow - 2:30 PM (Online Slot)</option>
+                  </>
+                ) : (
+                  <>
+                    <option value="Today - 4:30 PM (Immediate Triage)">Today - 4:30 PM (Immediate Triage)</option>
+                    <option value="Today - 6:00 PM (Evening OPD)">Today - 6:00 PM (Evening OPD)</option>
+                    <option value="Tomorrow - 10:00 AM (Morning Slot)">Tomorrow - 10:00 AM (Morning Slot)</option>
+                    <option value="Tomorrow - 2:30 PM (Afternoon Slot)">Tomorrow - 2:30 PM (Afternoon Slot)</option>
+                  </>
+                )}
               </select>
             </div>
 
@@ -199,9 +441,10 @@ export default function BookAppointmentModal({ hospital, onClose }) {
               className="btn btn-primary"
               style={{
                 width: '100%', padding: '14px', borderRadius: '9999px',
-                background: '#059669', fontWeight: 700, fontSize: '14px',
+                background: bookingData.consultationMode === 'online' ? '#0284c7' : '#059669',
+                fontWeight: 700, fontSize: '14px',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                marginTop: '10px'
+                marginTop: '6px'
               }}
             >
               <span>Next: Patient Sign-Up</span>
@@ -214,11 +457,14 @@ export default function BookAppointmentModal({ hospital, onClose }) {
         {modalStep === 2 && (
           <form onSubmit={handleConfirmBooking} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             <div style={{
-              background: 'rgba(5, 150, 105, 0.12)', borderRadius: '12px',
-              border: '1px solid rgba(16, 185, 129, 0.25)',
-              padding: '10px 14px', fontSize: '12px', color: '#ecfdf5',
-              display: 'flex', justifyContent: 'space-between'
+              background: bookingData.consultationMode === 'online' ? 'rgba(2, 132, 199, 0.12)' : 'rgba(5, 150, 105, 0.12)',
+              borderRadius: '12px',
+              border: bookingData.consultationMode === 'online' ? '1px solid rgba(2, 132, 199, 0.25)' : '1px solid rgba(16, 185, 129, 0.25)',
+              padding: '10px 14px', fontSize: '12px',
+              color: bookingData.consultationMode === 'online' ? '#e0f2fe' : '#ecfdf5',
+              display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px'
             }}>
+              <span><strong>Mode:</strong> {bookingData.consultationType}</span>
               <span><strong>Slot:</strong> {bookingData.timeSlot.split('(')[0]}</span>
               <span><strong>Specialty:</strong> {bookingData.specialty.split('(')[0]}</span>
             </div>

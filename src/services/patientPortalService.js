@@ -282,3 +282,132 @@ export const addHealthRecord = (patientId, recordData) => {
   saveAccounts(accounts);
   return accounts[idx];
 };
+
+// Login or Register with Google
+export const loginOrRegisterWithGoogle = async (googleData = {}) => {
+  const accounts = getStoredAccounts();
+  const email = (googleData.email || 'aditya.dhariwal@gmail.com').trim().toLowerCase();
+  const fullName = (googleData.fullName || googleData.name || 'Aditya Dhariwal').trim();
+  
+  // Find if account already exists with this email or username
+  let account = accounts.find(a => 
+    (a.email && a.email.toLowerCase() === email) ||
+    (a.username && a.username.toLowerCase() === `google_${email.split('@')[0]}`)
+  );
+
+  if (account) {
+    setActiveSession(account);
+    return account;
+  }
+
+  // Create new account
+  const patientId = generateUniversalPatientId(accounts);
+  const salt = generateSalt();
+  const passwordHash = await hashPassword('GoogleOAuth_' + Date.now(), salt);
+
+  const newAccount = {
+    patientId,
+    fullName,
+    dob: '1998-05-12',
+    gender: 'Male',
+    phone: '+91 98765 43210',
+    email,
+    username: `google_${email.split('@')[0]}`,
+    authProvider: 'google',
+    avatar: googleData.avatar || null,
+    salt,
+    passwordHash,
+    createdAt: new Date().toISOString(),
+    appointments: [
+      {
+        id: `apt-g-${Date.now()}`,
+        date: new Date().toISOString().split('T')[0],
+        time: '11:00 AM',
+        doctor: 'Dr. Ananya Sharma',
+        department: 'Cardiology',
+        status: 'scheduled',
+        notes: 'Initial digital consultation via Google Authentication'
+      }
+    ],
+    healthRecords: [
+      {
+        id: `rec-g-${Date.now()}`,
+        date: new Date().toISOString().split('T')[0],
+        type: 'visit note',
+        doctor: 'Google Sign-In Service',
+        notes: `Universal Health ID ${patientId} linked with verified Google Account (${email}).`
+      }
+    ]
+  };
+
+  accounts.push(newAccount);
+  saveAccounts(accounts);
+  setActiveSession(newAccount);
+  return newAccount;
+};
+
+// Login or Register with Mobile Number
+export const loginOrRegisterWithMobile = async (phone, fullName = 'Aditya Kumar') => {
+  const accounts = getStoredAccounts();
+  const cleanPhone = phone.trim();
+
+  // Find if account with this phone exists
+  let account = accounts.find(a => {
+    if (!a.phone) return false;
+    const p1 = a.phone.replace(/\D/g, '').slice(-10);
+    const p2 = cleanPhone.replace(/\D/g, '').slice(-10);
+    return p1 === p2;
+  });
+
+  if (account) {
+    setActiveSession(account);
+    return account;
+  }
+
+  // Create new account with verified phone
+  const patientId = generateUniversalPatientId(accounts);
+  const salt = generateSalt();
+  const passwordHash = await hashPassword('MobileOTP_' + Date.now(), salt);
+  const rawDigits = cleanPhone.replace(/\D/g, '').slice(-10);
+  const formattedPhone = `+91 ${rawDigits.slice(0, 5)} ${rawDigits.slice(5)}`;
+
+  const newAccount = {
+    patientId,
+    fullName: fullName || `Patient ${rawDigits.slice(-4)}`,
+    dob: '1996-03-21',
+    gender: 'Other',
+    phone: formattedPhone,
+    email: `patient_${rawDigits.slice(-4)}@healthflow.in`,
+    username: `phone_${rawDigits}`,
+    authProvider: 'mobile_otp',
+    salt,
+    passwordHash,
+    createdAt: new Date().toISOString(),
+    appointments: [
+      {
+        id: `apt-m-${Date.now()}`,
+        date: new Date().toISOString().split('T')[0],
+        time: '04:30 PM',
+        doctor: 'GMC Triage Outpatient',
+        department: 'General Medicine',
+        status: 'scheduled',
+        notes: 'Walk-in triage slot reserved via verified mobile SMS authentication'
+      }
+    ],
+    healthRecords: [
+      {
+        id: `rec-m-${Date.now()}`,
+        date: new Date().toISOString().split('T')[0],
+        type: 'visit note',
+        doctor: 'SMS Verification Gateway',
+        notes: `Universal Health ID ${patientId} verified and linked with mobile number ${formattedPhone}.`
+      }
+    ]
+  };
+
+  accounts.push(newAccount);
+  saveAccounts(accounts);
+  setActiveSession(newAccount);
+  return newAccount;
+};
+

@@ -10,13 +10,46 @@ import {
   loginPatient, 
   logoutPatient, 
   addAppointment, 
-  addHealthRecord 
+  addHealthRecord,
+  loginOrRegisterWithGoogle,
+  loginOrRegisterWithMobile
 } from '../../services/patientPortalService';
+import { useAuth } from '../../context/AuthContext';
+import { useNotifications } from '../../context/NotificationContext';
 import './PatientPortal.css';
 
+// Official Google 'G' SVG
+const GoogleIconSmall = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" style={{ flexShrink: 0 }}>
+    <path
+      fill="#4285F4"
+      d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"
+    />
+    <path
+      fill="#34A853"
+      d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"
+    />
+    <path
+      fill="#FBBC05"
+      d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.16 0 9.97 0 12s.45 3.84 1.25 5.42l4.03-3.15z"
+    />
+    <path
+      fill="#EA4335"
+      d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
+    />
+  </svg>
+);
+
 export default function PatientPortal() {
+  const { login } = useAuth();
+  const { addToast } = useNotifications();
   const [patient, setPatient] = useState(null);
   const [authMode, setAuthMode] = useState('login'); // 'login' | 'register'
+  const [loginMethod, setLoginMethod] = useState('phone'); // 'phone' | 'password'
+  const [portalPhone, setPortalPhone] = useState('');
+  const [portalOtpStage, setPortalOtpStage] = useState('phone'); // 'phone' | 'otp'
+  const [portalGeneratedOtp, setPortalGeneratedOtp] = useState('');
+  const [portalEnteredOtp, setPortalEnteredOtp] = useState('');
   const [activeTab, setActiveTab] = useState('appointments'); // 'profile' | 'appointments' | 'records'
   const [copiedId, setCopiedId] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -93,8 +126,81 @@ export default function PatientPortal() {
     try {
       const account = await loginPatient('aditya2026', 'Password123!');
       setPatient(account);
+      login('patient', {
+        name: account.fullName,
+        phone: account.phone,
+        email: account.email,
+        patientId: account.patientId,
+        isGuest: false
+      });
     } catch (err) {
       setErrorMsg(err.message);
+    }
+  };
+
+  // Google Login for Portal
+  const handleGooglePortalLogin = async () => {
+    setErrorMsg('');
+    try {
+      const account = await loginOrRegisterWithGoogle({
+        fullName: 'Aditya Dhariwal',
+        email: 'aditya.dhariwal@gmail.com'
+      });
+      setPatient(account);
+      login('patient', {
+        name: account.fullName,
+        email: account.email,
+        phone: account.phone,
+        patientId: account.patientId,
+        isGuest: false
+      });
+      addToast(`Logged in via Google as ${account.fullName}`, 'success');
+      setSuccessMsg(`Welcome, ${account.fullName}!`);
+      setTimeout(() => setSuccessMsg(''), 3000);
+    } catch (err) {
+      setErrorMsg(err.message || 'Google sign-in failed');
+    }
+  };
+
+  // Mobile OTP: Send Code
+  const handleSendPortalOtp = (e) => {
+    e.preventDefault();
+    setErrorMsg('');
+    const cleanDigits = portalPhone.replace(/\D/g, '');
+    if (cleanDigits.length < 10) {
+      setErrorMsg('Please enter a valid 10-digit mobile number.');
+      return;
+    }
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    setPortalGeneratedOtp(code);
+    setPortalOtpStage('otp');
+    addToast(`📲 SMS sent to +91 ${cleanDigits.slice(-10)}: Your HealthFlow OTP is ${code}`, 'info', 10000);
+  };
+
+  // Mobile OTP: Verify Code
+  const handleVerifyPortalOtp = async (e) => {
+    e.preventDefault();
+    setErrorMsg('');
+    if (portalEnteredOtp !== portalGeneratedOtp) {
+      setErrorMsg('Invalid OTP code. Please enter the 6-digit code received or tap autofill.');
+      return;
+    }
+    try {
+      const cleanDigits = portalPhone.replace(/\D/g, '').slice(-10);
+      const account = await loginOrRegisterWithMobile(cleanDigits, 'Aditya Kumar');
+      setPatient(account);
+      login('patient', {
+        name: account.fullName,
+        phone: account.phone,
+        email: account.email,
+        patientId: account.patientId,
+        isGuest: false
+      });
+      addToast(`Mobile verified! Welcome, ${account.fullName}.`, 'success');
+      setSuccessMsg(`Welcome, ${account.fullName}!`);
+      setTimeout(() => setSuccessMsg(''), 3000);
+    } catch (err) {
+      setErrorMsg(err.message || 'OTP verification failed');
     }
   };
 
@@ -214,49 +320,168 @@ export default function PatientPortal() {
             </div>
           )}
 
-          {/* SIGN IN FORM */}
+          {/* SIGN IN VIEW */}
           {authMode === 'login' ? (
-            <form onSubmit={handleLogin} className="space-y-3">
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1">Username</label>
-                <input
-                  type="text"
-                  placeholder="e.g. aditya2026"
-                  value={loginData.username}
-                  onChange={e => setLoginData({ ...loginData, username: e.target.value })}
-                  className="portal-input"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1">Password</label>
-                <input
-                  type="password"
-                  placeholder="••••••••"
-                  value={loginData.password}
-                  onChange={e => setLoginData({ ...loginData, password: e.target.value })}
-                  className="portal-input"
-                />
-              </div>
-
+            <div className="space-y-4">
+              {/* Google 1-Click Login */}
               <button
-                type="submit"
-                className="w-full py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition shadow-sm"
+                type="button"
+                onClick={handleGooglePortalLogin}
+                className="w-full py-2.5 px-3 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 font-semibold text-xs transition shadow-xs flex items-center justify-center gap-2"
               >
-                Sign In to Patient Portal
+                <GoogleIconSmall />
+                <span>Continue with Google</span>
               </button>
 
-              <div className="pt-3 border-t border-slate-100 text-center">
+              <div className="flex items-center text-center my-2 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                <div className="flex-1 border-b border-slate-200" />
+                <span className="px-2">or sign in with</span>
+                <div className="flex-1 border-b border-slate-200" />
+              </div>
+
+              {/* Method Switch: Mobile OTP vs Username/Password */}
+              <div className="flex bg-slate-100 p-1 rounded-lg gap-1">
                 <button
                   type="button"
-                  onClick={handleDemoLogin}
-                  className="text-xs text-emerald-700 font-bold hover:underline flex items-center justify-center gap-1 mx-auto"
+                  onClick={() => setLoginMethod('phone')}
+                  className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition ${loginMethod === 'phone' ? 'bg-white text-emerald-800 shadow-xs' : 'text-slate-500 hover:text-slate-800'}`}
                 >
-                  <Sparkles size={13} />
-                  <span>1-Click Demo Login (Aditya Kumar)</span>
+                  Mobile Number (OTP)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLoginMethod('password')}
+                  className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition ${loginMethod === 'password' ? 'bg-white text-emerald-800 shadow-xs' : 'text-slate-500 hover:text-slate-800'}`}
+                >
+                  Username & Password
                 </button>
               </div>
-            </form>
+
+              {loginMethod === 'phone' ? (
+                portalOtpStage === 'phone' ? (
+                  <form onSubmit={handleSendPortalOtp} className="space-y-3">
+                    <div>
+                      <label className="text-xs font-semibold text-slate-700 block mb-1">Mobile Number</label>
+                      <div className="flex gap-2">
+                        <span className="py-2 px-2.5 bg-slate-100 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 flex items-center">
+                          +91
+                        </span>
+                        <input
+                          type="tel"
+                          required
+                          maxLength={10}
+                          placeholder="98765 43210"
+                          value={portalPhone}
+                          onChange={e => setPortalPhone(e.target.value.replace(/\D/g, ''))}
+                          className="portal-input flex-1"
+                        />
+                      </div>
+                      <span className="text-[10px] text-slate-400 mt-1 block">
+                        We will send a 6-digit SMS verification code.
+                      </span>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={portalPhone.length < 10}
+                      className="w-full py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold text-xs transition shadow-sm flex items-center justify-center gap-1.5"
+                    >
+                      <span>Send OTP via SMS</span>
+                      <ArrowRight size={13} />
+                    </button>
+                  </form>
+                ) : (
+                  <form onSubmit={handleVerifyPortalOtp} className="space-y-3">
+                    <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-xs text-emerald-800">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="font-semibold text-[11px]">📲 SMS Code Sent:</span>
+                        <button
+                          type="button"
+                          onClick={() => setPortalOtpStage('phone')}
+                          className="text-[10px] text-emerald-700 font-bold underline"
+                        >
+                          Change Number
+                        </button>
+                      </div>
+                      <div className="font-mono text-sm font-bold text-emerald-900">
+                        {portalGeneratedOtp}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setPortalEnteredOtp(portalGeneratedOtp)}
+                        className="mt-1.5 text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-bold"
+                      >
+                        Tap to Autofill {portalGeneratedOtp}
+                      </button>
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-slate-700 block mb-1">Enter 6-Digit OTP</label>
+                      <input
+                        type="text"
+                        required
+                        maxLength={6}
+                        placeholder="e.g. 482910"
+                        value={portalEnteredOtp}
+                        onChange={e => setPortalEnteredOtp(e.target.value.replace(/\D/g, ''))}
+                        className="portal-input text-center font-mono font-bold tracking-widest text-sm"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={portalEnteredOtp.length < 6}
+                      className="w-full py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold text-xs transition shadow-sm flex items-center justify-center gap-1.5"
+                    >
+                      <span>Verify OTP & Sign In</span>
+                      <Check size={14} />
+                    </button>
+                  </form>
+                )
+              ) : (
+                <form onSubmit={handleLogin} className="space-y-3">
+                  <div>
+                    <label className="text-xs font-semibold text-slate-700 block mb-1">Username</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. aditya2026"
+                      value={loginData.username}
+                      onChange={e => setLoginData({ ...loginData, username: e.target.value })}
+                      className="portal-input"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-slate-700 block mb-1">Password</label>
+                    <input
+                      type="password"
+                      placeholder="••••••••"
+                      value={loginData.password}
+                      onChange={e => setLoginData({ ...loginData, password: e.target.value })}
+                      className="portal-input"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition shadow-sm"
+                  >
+                    Sign In to Patient Portal
+                  </button>
+
+                  <div className="pt-2 text-center">
+                    <button
+                      type="button"
+                      onClick={handleDemoLogin}
+                      className="text-xs text-emerald-700 font-bold hover:underline flex items-center justify-center gap-1 mx-auto"
+                    >
+                      <Sparkles size={13} />
+                      <span>1-Click Demo Login (Aditya Kumar)</span>
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
           ) : (
             /* REGISTRATION FORM */
             <form onSubmit={handleRegister} className="space-y-3">

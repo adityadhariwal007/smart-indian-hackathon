@@ -5,7 +5,7 @@ import {
   HeartPulse, Search, TrendingUp, Stethoscope, Ambulance,
   ArrowRight, MapPin, Users, Clock, Shield, ChevronRight,
   Activity, Zap, BarChart3, Phone, User, ShieldCheck, AlertTriangle,
-  Syringe, Cross, CheckCircle2
+  Syringe, Cross, CheckCircle2, LogIn
 } from 'lucide-react';
 import { ScrollReveal, AnimatedCounter, MagneticButton } from '../../components/animations/Animations';
 import MaskedHeading from '../../components/common/MaskedHeading';
@@ -104,6 +104,16 @@ export default function LandingPage() {
             >
               <Shield size={13} />
               <span>{t('admin')}</span>
+            </button>
+
+            <button
+              className="nav-role-btn"
+              style={{ background: '#059669', color: '#fff', fontWeight: 700, borderColor: '#059669' }}
+              onClick={() => navigate('/login')}
+              title="Sign in with Google or Mobile OTP"
+            >
+              <LogIn size={13} />
+              <span>Sign In</span>
             </button>
           </div>
         </div>
