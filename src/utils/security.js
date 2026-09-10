@@ -1,3 +1,5 @@
+import DOMPurify from 'dompurify';
+
 // Security, Anti-Spam & Rate Limiting Utility for HealthFlow
 
 const RATE_LIMIT_PREFIX = 'healthflow_rl_';
@@ -57,13 +59,34 @@ export function validateHoneypot(trapValue) {
 }
 
 /**
- * Sanitizes input string to prevent basic XSS injection before rendering.
+ * Sanitizes input string to prevent XSS injection using industry-standard DOMPurify.
+ * By default strips all HTML tags, script entities, event handlers, and javascript: links.
  * @param {string} str
- * @returns {string}
+ * @param {object} options - Optional DOMPurify configuration override
+ * @returns {string} Clean, safe text
  */
-export function sanitizeInput(str) {
+export function sanitizeInput(str, options = { ALLOWED_TAGS: [], ALLOWED_ATTR: [] }) {
   if (typeof str !== 'string') return '';
-  return str
-    .replace(/[<>]/g, '')
-    .trim();
+  if (typeof window !== 'undefined' && DOMPurify && typeof DOMPurify.sanitize === 'function') {
+    return DOMPurify.sanitize(str, options).trim();
+  }
+  // Safe fallback if DOMPurify window context is not yet initialized
+  return str.replace(/[<>]/g, '').trim();
+}
+
+/**
+ * Sanitizes rich HTML content while preserving safe formatting tags.
+ * Strips <script>, <iframe>, <object>, inline event handlers (onload, onerror), and malicious protocols.
+ * @param {string} html
+ * @returns {string} Sanitized HTML
+ */
+export function sanitizeHTML(html) {
+  if (typeof html !== 'string') return '';
+  if (typeof window !== 'undefined' && DOMPurify && typeof DOMPurify.sanitize === 'function') {
+    return DOMPurify.sanitize(html, {
+      ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'ul', 'ol', 'li', 'span', 'code'],
+      ALLOWED_ATTR: ['href', 'target', 'rel', 'class', 'title'],
+    }).trim();
+  }
+  return html.replace(/[<>]/g, '').trim();
 }
