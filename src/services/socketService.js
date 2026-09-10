@@ -17,9 +17,10 @@ class SocketService {
 
     if (!this.socket) {
       // Use explicit environment variable if set, otherwise relative to current host
-      // which Vite reverse-proxies to http://localhost:5001 in dev
-      const socketUrl = import.meta.env.VITE_WS_URL || 
-        (typeof window !== 'undefined' && window.location.port === '5173' ? 'http://localhost:5001' : '/');
+      const savedUrl = typeof localStorage !== 'undefined' ? localStorage.getItem('healthflow_ws_url') : null;
+      const host = typeof window !== 'undefined' && window.location.hostname ? window.location.hostname : 'localhost';
+      const socketUrl = savedUrl || import.meta.env.VITE_WS_URL || 
+        (typeof window !== 'undefined' && window.location.port === '5173' ? `http://${host}:5001` : '/');
 
       this.socket = io(socketUrl, {
         reconnection: true,

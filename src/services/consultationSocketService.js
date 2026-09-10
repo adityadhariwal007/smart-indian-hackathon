@@ -19,8 +19,9 @@ class ConsultationSocketService {
     }
 
     if (!this.socket) {
+      const savedUrl = typeof localStorage !== 'undefined' ? localStorage.getItem('healthflow_ws_url') : null;
       const host = typeof window !== 'undefined' && window.location.hostname ? window.location.hostname : 'localhost';
-      const serverUrl = import.meta.env.VITE_WS_URL || `http://${host}:5001`;
+      const serverUrl = savedUrl || import.meta.env.VITE_WS_URL || `http://${host}:5001`;
 
       this.socket = io(serverUrl, {
         reconnection: true,
