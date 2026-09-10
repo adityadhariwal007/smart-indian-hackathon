@@ -60,7 +60,7 @@ export default function Sidebar() {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate('/login');
   };
 
   return (
@@ -102,11 +102,11 @@ export default function Sidebar() {
       </nav>
 
       <div className="sidebar-footer">
-        {!collapsed && user.role !== 'patient' && (
+        {!collapsed && user && user.role !== 'patient' && (
           <div className="role-switcher">
             <span className="role-label">Switch Role</span>
             <div className="role-buttons">
-              {['patient', 'doctor', 'admin'].map(role => (
+              {['doctor', 'admin'].map(role => (
                 <button
                   key={role}
                   className={`role-btn ${user.role === role ? 'active' : ''}`}

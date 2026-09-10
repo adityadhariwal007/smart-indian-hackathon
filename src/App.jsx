@@ -54,6 +54,7 @@ import AdminAnalytics from './pages/admin/AdminAnalytics';
 import ResourceAllocation from './pages/admin/ResourceAllocation';
 import AdminSettings from './pages/admin/AdminSettings';
 import AdminComplaints from './pages/admin/AdminComplaints';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 
 export default function App() {
   return (
@@ -103,8 +104,15 @@ export default function App() {
         <Route path="complaints" element={<ComplaintsPage />} />
       </Route>
 
-      {/* Doctor Portal Routes */}
-      <Route path="/doctor" element={<DashboardLayout />}>
+      {/* Doctor Portal Routes (Protected - Doctor Role Only) */}
+      <Route 
+        path="/doctor" 
+        element={
+          <ProtectedRoute allowedRoles={['doctor']}>
+            <DashboardLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route index element={<DoctorDashboard />} />
         <Route path="patients" element={<DoctorPatients />} />
         <Route path="queue" element={<DoctorQueue />} />
@@ -114,8 +122,15 @@ export default function App() {
         <Route path="profile" element={<DoctorProfilePage />} />
       </Route>
 
-      {/* Admin Operations Portal Routes */}
-      <Route path="/admin" element={<DashboardLayout />}>
+      {/* Admin Operations Portal Routes (Protected - Admin Role Only) */}
+      <Route 
+        path="/admin" 
+        element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <DashboardLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route index element={<AdminDashboard />} />
         <Route path="crowd" element={<LiveCrowd />} />
         <Route path="predictions" element={<AdminPredictions />} />

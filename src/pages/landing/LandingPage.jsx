@@ -32,14 +32,24 @@ const itemVariants = {
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const { login, switchRole } = useAuth();
+  const { user, isAuthenticated, login } = useAuth();
   const { t } = useLanguage();
   const { scrollY } = useScroll();
   const [isAiChatOpen, setIsAiChatOpen] = useState(false);
 
   const handleRoleLogin = (role) => {
-    login(role);
-    navigate(`/${role}`);
+    if (role === 'patient') {
+      login('patient');
+      navigate('/patient');
+      return;
+    }
+    // If already authenticated with that role, go directly
+    if (isAuthenticated && user?.role === role) {
+      navigate(`/${role}`);
+      return;
+    }
+    // Otherwise send to login with role pre-selected
+    navigate(`/login?role=${role}`);
   };
   
   // Parallax effects

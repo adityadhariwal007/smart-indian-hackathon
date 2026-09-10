@@ -1,45 +1,7 @@
-import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { createContext, useContext, useState, useCallback } from 'react';
+import { AUTH_ACCOUNTS, authenticateStaff } from '../config/authCredentials';
 
 const AuthContext = createContext(null);
-
-export const demoUsers = {
-  patient: {
-    id: 1,
-    name: 'Aditya Kumar',
-    email: 'aditya.demo@healthflow.in',
-    phone: '+91-98765-43210',
-    role: 'patient',
-    avatar: null,
-    location: { lat: 28.6139, lng: 77.2090 }, // Central Delhi
-    bloodGroup: 'O+',
-    age: 32,
-  },
-  doctor: {
-    id: 1,
-    name: 'Dr. Ananya Sharma',
-    email: 'dr.ananya@healthflow.in',
-    phone: '+91-98765-43211',
-    role: 'doctor',
-    avatar: null,
-    specialization: 'Cardiology',
-    department_id: 2,
-    hospital_id: 1,
-    hospital_name: 'CityCare Government Hospital',
-    experience: 14,
-    qualifications: ['MBBS', 'MD', 'DM'],
-  },
-  admin: {
-    id: 1,
-    name: 'Rajesh Mehta',
-    email: 'admin@citycare.healthflow.in',
-    phone: '+91-98765-43212',
-    role: 'admin',
-    avatar: null,
-    hospital_id: 1,
-    hospital_name: 'CityCare Government Hospital',
-    designation: 'Hospital Administrator',
-  },
-};
 
 export const guestPatient = {
   id: null,
@@ -54,71 +16,121 @@ export const guestPatient = {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
-    const path = typeof window !== 'undefined' ? window.location.pathname : '';
-    if (path.startsWith('/doctor')) return demoUsers.doctor;
-    if (path.startsWith('/admin')) return demoUsers.admin;
-    const savedUser = typeof localStorage !== 'undefined' ? localStorage.getItem('healthflow_user') : null;
-    if (savedUser) {
-      try { return JSON.parse(savedUser); } catch (e) {}
+    // 1. Check persisted session in localStorage
+    if (typeof localStorage !== 'undefined') {
+      const savedUser = localStorage.getItem('healthflow_auth_user');
+      if (savedUser) {
+        try {
+          const parsed = JSON.parse(savedUser);
+          if (parsed && parsed.role) return parsed;
+        } catch (e) {
+          console.warn('Failed to parse saved user session:', e);
+        }
+      }
     }
-    const saved = typeof localStorage !== 'undefined' ? localStorage.getItem('healthflow_role') : null;
-    if (saved && saved !== 'patient' && demoUsers[saved]) return demoUsers[saved];
-    if (path.startsWith('/patient')) return guestPatient;
-    return guestPatient;
+
+    // 2. Default to guest for patient portal routes
+    const path = typeof window !== 'undefined' ? window.location.pathname : '';
+    if (path.startsWith('/patient')) {
+      return guestPatient;
+    }
+
+    // 3. Logged out by default
+    return null;
   });
 
-  const login = useCallback((role, customData = null) => {
-    if (role === 'patient') {
-      if (customData && customData.name) {
-        const u = { ...guestPatient, ...customData, role: 'patient', isGuest: false };
-        setUser(u);
-        if (typeof localStorage !== 'undefined') {
-          localStorage.setItem('healthflow_user', JSON.stringify(u));
-          localStorage.setItem('healthflow_role', 'patient');
-        }
-        return;
+  /**
+   * Authenticate staff (Doctor / Admin) with the 3 predefined credentials
+   * @param {string} username 
+   * @param {string} password 
+   * @param {'doctor'|'admin'} role 
+   */
+  const loginStaff = useCallback((username, password, role) => {
+    const result = authenticateStaff(username, password, role);
+    if (result.success && result.user) {
+      setUser(result.user);
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('healthflow_auth_user', JSON.stringify(result.user));
+        localStorage.setItem('healthflow_role', result.user.role);
       }
-      setUser(guestPatient);
-      return;
     }
-    const base = demoUsers[role] || null;
-    const u = customData ? { ...base, ...customData, role } : base;
-    setUser(u);
-    if (role && typeof localStorage !== 'undefined') {
-      localStorage.setItem('healthflow_role', role);
-    }
+    return result;
   }, []);
 
-  const register = useCallback((role, customData = null) => {
-    login(role, customData);
-  }, [login]);
+  /**
+   * Generic login for patient portal backward compatibility
+   */
+  const login = useCallback((role, customData = null) => {
+    if (role === 'patient') {
+      const u = customData && customData.name 
+        ? { ...guestPatient, ...customData, role: 'patient', isGuest: false }
+        : guestPatient;
+      setUser(u);
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('healthflow_auth_user', JSON.stringify(u));
+        localStorage.setItem('healthflow_role', 'patient');
+      }
+      return;
+    }
 
+    // For doctor or admin, if customData provides username & password, authenticate
+    if (customData?.username && customData?.password) {
+      return loginStaff(customData.username, customData.password, role);
+    }
+  }, [loginStaff]);
+
+  /**
+   * Switch active role for logged-in staff user
+   */
+  const switchRole = useCallback((newRole) => {
+    if (newRole === 'patient') {
+      setUser(guestPatient);
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('healthflow_auth_user', JSON.stringify(guestPatient));
+        localStorage.setItem('healthflow_role', 'patient');
+      }
+      return;
+    }
+
+    // If currently logged in as a staff member (aditya, palakshi, arnav)
+    if (user && user.username) {
+      const account = AUTH_ACCOUNTS.find(a => a.username === user.username);
+      if (account) {
+        const result = authenticateStaff(account.username, account.password, newRole);
+        if (result.success) {
+          setUser(result.user);
+          if (typeof localStorage !== 'undefined') {
+            localStorage.setItem('healthflow_auth_user', JSON.stringify(result.user));
+            localStorage.setItem('healthflow_role', newRole);
+          }
+        }
+      }
+    }
+  }, [user]);
+
+  /**
+   * Logout current session
+   */
   const logout = useCallback(() => {
-    setUser(guestPatient);
+    setUser(null);
     if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('healthflow_auth_user');
       localStorage.removeItem('healthflow_role');
       localStorage.removeItem('healthflow_user');
     }
   }, []);
 
-  const switchRole = useCallback((role) => {
-    if (role === 'patient') {
-      setUser(guestPatient);
-      if (typeof localStorage !== 'undefined') {
-        localStorage.removeItem('healthflow_role');
-        localStorage.removeItem('healthflow_user');
-      }
-      return;
-    }
-    const u = demoUsers[role] || null;
-    setUser(u);
-    if (role && typeof localStorage !== 'undefined') {
-      localStorage.setItem('healthflow_role', role);
-    }
-  }, []);
+  const isAuthenticated = Boolean(user && !user.isGuest);
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, switchRole, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      login, 
+      loginStaff, 
+      logout, 
+      switchRole, 
+      isAuthenticated 
+    }}>
       {children}
     </AuthContext.Provider>
   );

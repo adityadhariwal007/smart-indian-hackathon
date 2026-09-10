@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { 
   Phone, 
   ShieldCheck, 
@@ -45,7 +45,7 @@ const DEFAULT_PATIALA_TRIP = {
     address: 'Sangrur Road, New Lal Bagh, Patiala, Punjab'
   },
   pickupLocation: {
-    name: 'Patient Location (Leela Bhawan / Model Town)',
+    name: 'Patient Location (Model Town / Leela Bhawan)',
     lat: 30.3340,
     lng: 76.3830,
     address: 'Model Town, Patiala, Punjab'
@@ -57,15 +57,28 @@ const DEFAULT_PATIALA_TRIP = {
 
 export default function LiveAmbulanceTracking() {
   const { tripId: paramTripId } = useParams();
+  const location = useLocation();
   const tripId = paramTripId || 'EMS-DEMO-108';
 
-  const [trip, setTrip] = useState(DEFAULT_PATIALA_TRIP);
+  const getInitialTrip = () => {
+    if (location.state?.trip) return location.state.trip;
+    try {
+      const saved = sessionStorage.getItem('healthflow_active_trip') || localStorage.getItem('healthflow_active_trip');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed) return parsed;
+      }
+    } catch (e) {}
+    return DEFAULT_PATIALA_TRIP;
+  };
+
+  const [trip, setTrip] = useState(getInitialTrip);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState('live_map'); // 'live_map' | 'audit_log'
   const [auditLogs, setAuditLogs] = useState([]);
-  const [currentStatus, setCurrentStatus] = useState('in_transit');
+  const [currentStatus, setCurrentStatus] = useState(() => getInitialTrip().status || 'in_transit');
 
   // Load trip details
   useEffect(() => {
@@ -81,9 +94,10 @@ export default function LiveAmbulanceTracking() {
         }
       } catch (err) {
         if (mounted) {
-          // Graceful fallback to verified Patiala demo trip
-          setTrip(DEFAULT_PATIALA_TRIP);
-          setCurrentStatus(DEFAULT_PATIALA_TRIP.status);
+          // Graceful fallback to user selected or verified Patiala demo trip
+          const fallbackTrip = getInitialTrip();
+          setTrip(fallbackTrip);
+          setCurrentStatus(fallbackTrip.status || DEFAULT_PATIALA_TRIP.status);
         }
       }
     }
@@ -390,8 +404,11 @@ export default function LiveAmbulanceTracking() {
               <div>
                 <span className="text-[10px] font-bold text-slate-400 uppercase">Patient Pickup Scene</span>
                 <p className="text-xs font-bold text-slate-800 m-0">
-                  {trip?.startLocation?.address || 'Model Town, Patiala'}
+                  {trip?.pickupLocation?.name || trip?.startLocation?.address || 'Model Town, Patiala'}
                 </p>
+                {trip?.pickupLocation?.address && trip?.pickupLocation?.address !== trip?.pickupLocation?.name && (
+                  <p className="text-[11px] text-slate-500 m-0">{trip.pickupLocation.address}</p>
+                )}
               </div>
             </div>
 
@@ -402,8 +419,11 @@ export default function LiveAmbulanceTracking() {
               <div>
                 <span className="text-[10px] font-bold text-slate-400 uppercase">Receiving Emergency Hospital</span>
                 <p className="text-xs font-bold text-slate-800 m-0">
-                  {trip?.destination?.address || 'GMC Rajindra Hospital, Patiala'}
+                  {trip?.destination?.name || trip?.destination?.address || 'GMC Rajindra Hospital, Patiala'}
                 </p>
+                {trip?.destination?.address && trip?.destination?.name && (
+                  <p className="text-[11px] text-slate-500 m-0">{trip.destination.address}</p>
+                )}
                 <span className="text-[11px] text-emerald-600 font-semibold">Trauma Center Notified</span>
               </div>
             </div>
