@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, Clock, MapPin, CheckCircle, XCircle, Search, Video } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import BookAppointmentModal from '../../components/patient/BookAppointmentModal';
+import hospitals from '../../data/hospitals';
 
 const demoAppointments = [
   { id: 1, doctor: 'Dr. Ananya Sharma', specialization: 'Cardiology', hospital: 'GMC & Rajindra Hospital, Patiala', date: 'Today', time: '10:30 AM', status: 'confirmed', type: 'Online Teleconsultation', isOnline: true },
@@ -13,6 +15,7 @@ export default function AppointmentsPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [tab, setTab] = useState('upcoming');
+  const [bookingHospital, setBookingHospital] = useState(null);
 
   // If patient has an active booking created via modal
   const activeUserAppointments = user?.bookedSlot ? [
@@ -47,7 +50,7 @@ export default function AppointmentsPage() {
         </div>
         <button 
           className="btn btn-primary"
-          onClick={() => navigate('/patient/hospitals')}
+          onClick={() => setBookingHospital(hospitals[0])}
           style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', boxShadow: '0 4px 14px rgba(2, 132, 199, 0.35)' }}
         >
           <Search size={16} />
@@ -69,7 +72,7 @@ export default function AppointmentsPage() {
             <button 
               className="btn btn-primary btn-sm" 
               style={{ borderRadius: '9999px', margin: '0 auto', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
-              onClick={() => navigate('/patient/hospitals')}
+              onClick={() => setBookingHospital(hospitals[0])}
             >
               <Search size={14} />
               <span>Find Hospital & Book</span>
@@ -110,6 +113,13 @@ export default function AppointmentsPage() {
           ))
         )}
       </div>
+
+      {bookingHospital && (
+        <BookAppointmentModal
+          hospital={bookingHospital}
+          onClose={() => setBookingHospital(null)}
+        />
+      )}
     </div>
   );
 }

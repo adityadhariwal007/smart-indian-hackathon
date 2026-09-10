@@ -7,15 +7,18 @@ import {
   ShieldCheck, ArrowRight, ArrowLeft, CheckCircle2, Zap,
   Laptop, Video, Check
 } from 'lucide-react';
-import { getCrowdLabel, getCrowdColor } from '../../data/hospitals';
+import hospitals, { getCrowdLabel, getCrowdColor } from '../../data/hospitals';
 import { useLocationContext } from '../../context/LocationContext';
 import { analytics } from '../../services/analytics';
 
-export default function BookAppointmentModal({ hospital, onClose }) {
+export default function BookAppointmentModal({ hospital: initialHospital, preselectedDoctor = null, onClose }) {
   const navigate = useNavigate();
   const { user, login } = useAuth();
   const { addToast } = useNotifications();
   const { calculateHospitalDistance } = useLocationContext();
+
+  const [selectedHospital, setSelectedHospital] = useState(() => initialHospital || hospitals[0]);
+  const hospital = selectedHospital || hospitals[0];
 
   const distance = calculateHospitalDistance(hospital);
 
@@ -24,7 +27,9 @@ export default function BookAppointmentModal({ hospital, onClose }) {
 
   const [bookingData, setBookingData] = useState({
     consultationMode: 'offline', // 'online' | 'offline'
-    specialty: 'Cardiology Consultation',
+    specialty: preselectedDoctor 
+      ? `${preselectedDoctor.name} (${preselectedDoctor.specialization})` 
+      : 'Cardiology Consultation',
     timeSlot: 'Today - 4:30 PM (Immediate Triage)',
     consultationType: 'Offline Appointment (In-Person OPD)',
   });
@@ -181,6 +186,31 @@ export default function BookAppointmentModal({ hospital, onClose }) {
             </div>
             <div style={{ fontSize: '12px', color: '#cbd5e1' }}>
               {hospital.address} • {distance != null && <strong style={{ color: '#34d399' }}>{distance} km away • </strong>}<span style={{ color: '#6ee7b7' }}>~{hospital.waitTime}m wait</span>
+            </div>
+            <div style={{ marginTop: '6px' }}>
+              <select
+                value={hospital.id}
+                onChange={(e) => {
+                  const h = hospitals.find(x => x.id === Number(e.target.value));
+                  if (h) setSelectedHospital(h);
+                }}
+                style={{
+                  background: 'rgba(15, 23, 42, 0.7)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  borderRadius: '8px',
+                  color: '#e2e8f0',
+                  fontSize: '11px',
+                  padding: '3px 8px',
+                  cursor: 'pointer',
+                  width: '100%'
+                }}
+              >
+                {hospitals.map(h => (
+                  <option key={h.id} value={h.id} style={{ background: '#1e293b', color: '#fff' }}>
+                    Change Hospital: {h.name} ({h.type})
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         </div>

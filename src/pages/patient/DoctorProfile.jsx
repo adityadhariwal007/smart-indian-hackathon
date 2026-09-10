@@ -1,14 +1,17 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Star, Clock, MapPin, Award, Calendar } from 'lucide-react';
 import doctors from '../../data/doctors';
 import hospitals from '../../data/hospitals';
 import departments from '../../data/departments';
 import { useNotifications } from '../../context/NotificationContext';
+import BookAppointmentModal from '../../components/patient/BookAppointmentModal';
 
 export default function DoctorProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToast } = useNotifications();
+  const [showBookModal, setShowBookModal] = useState(false);
   const doc = doctors.find(d => d.id === parseInt(id));
 
   if (!doc) return <div><h2>Doctor not found</h2></div>;
@@ -17,8 +20,7 @@ export default function DoctorProfile() {
   const dept = departments.find(d => d.id === doc.department_id);
 
   const handleBook = () => {
-    addToast(`Appointment booked with ${doc.name}!`, 'success');
-    navigate('/patient/appointments');
+    setShowBookModal(true);
   };
 
   return (
@@ -88,6 +90,14 @@ export default function DoctorProfile() {
           </div>
         </div>
       </div>
+
+      {showBookModal && (
+        <BookAppointmentModal
+          hospital={hospital}
+          preselectedDoctor={doc}
+          onClose={() => setShowBookModal(false)}
+        />
+      )}
     </div>
   );
 }

@@ -4,12 +4,14 @@ import { Search, Filter, Star, Clock, MapPin } from 'lucide-react';
 import doctors from '../../data/doctors';
 import hospitals from '../../data/hospitals';
 import departments from '../../data/departments';
+import BookAppointmentModal from '../../components/patient/BookAppointmentModal';
 
 export default function DoctorSearch() {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [specFilter, setSpecFilter] = useState('all');
   const [availFilter, setAvailFilter] = useState('all');
+  const [bookingTarget, setBookingTarget] = useState(null);
 
   const filtered = useMemo(() => {
     return doctors.filter(d => {
@@ -84,7 +86,7 @@ export default function DoctorSearch() {
               </div>
               <div className="flex gap-2 mt-3 justify-end">
                 <button className="btn btn-secondary btn-sm" onClick={e => { e.stopPropagation(); navigate(`/patient/doctors/${doc.id}`); }}>View Profile</button>
-                <button className="btn btn-primary btn-sm" onClick={e => { e.stopPropagation(); navigate('/patient/appointments'); }}>Book Appointment</button>
+                <button className="btn btn-primary btn-sm" onClick={e => { e.stopPropagation(); setBookingTarget({ hospital, doctor: doc }); }}>Book Appointment</button>
               </div>
             </div>
           );
@@ -95,6 +97,14 @@ export default function DoctorSearch() {
         <div className="text-center mt-6 text-secondary">
           Showing first 20 of {filtered.length} results. Refine your search for more specific results.
         </div>
+      )}
+
+      {bookingTarget && (
+        <BookAppointmentModal
+          hospital={bookingTarget.hospital}
+          preselectedDoctor={bookingTarget.doctor}
+          onClose={() => setBookingTarget(null)}
+        />
       )}
     </div>
   );

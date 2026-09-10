@@ -15,6 +15,8 @@ import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import LanguageToggle from '../../components/common/LanguageToggle';
 import HealthFlowAIChatModal from '../../components/chat/HealthFlowAIChatModal';
+import BookAppointmentModal from '../../components/patient/BookAppointmentModal';
+import hospitals from '../../data/hospitals';
 import './LandingPage.css';
 
 const containerVariants = {
@@ -36,6 +38,7 @@ export default function LandingPage() {
   const { t } = useLanguage();
   const { scrollY } = useScroll();
   const [isAiChatOpen, setIsAiChatOpen] = useState(false);
+  const [bookingHospital, setBookingHospital] = useState(null);
 
   const handleRoleLogin = (role) => {
     if (role === 'patient') {
@@ -246,10 +249,8 @@ export default function LandingPage() {
           >
             <button 
               className="hero-book-btn"
-              onClick={() => {
-                switchRole('patient');
-                navigate('/patient');
-              }}
+              onClick={() => setBookingHospital(hospitals[0])}
+              title="Schedule In-Person OPD or Online Teleconsultation"
             >
               {t('bookAppointment')}
             </button>
@@ -561,6 +562,14 @@ export default function LandingPage() {
           <p className="footer-copy">{t('footerCopy')}</p>
         </div>
       </footer>
+
+      {/* Book Appointment Modal */}
+      {bookingHospital && (
+        <BookAppointmentModal
+          hospital={bookingHospital}
+          onClose={() => setBookingHospital(null)}
+        />
+      )}
 
       {/* AI Symptom Assessment & Navigation Modal */}
       <HealthFlowAIChatModal
