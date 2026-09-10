@@ -5,7 +5,7 @@ import {
   HeartPulse, Search, TrendingUp, Stethoscope, Ambulance,
   ArrowRight, MapPin, Users, Clock, Shield, ChevronRight,
   Activity, Zap, BarChart3, Phone, User, ShieldCheck, AlertTriangle,
-  Syringe, Cross
+  Syringe, Cross, CheckCircle2
 } from 'lucide-react';
 import { ScrollReveal, AnimatedCounter, MagneticButton } from '../../components/animations/Animations';
 import MaskedHeading from '../../components/common/MaskedHeading';
@@ -191,108 +191,126 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Informative Public Health & Service Cards */}
+      {/* Informative Public Health & Customer Feature Cards */}
       <section className="emerging-cards-wrapper" id="directory">
         <div className="emerging-cards-grid">
-          {/* Card 1: Public Hospital Directory */}
+          {/* Card 1: Hospital Directory & Verified Facilities */}
           <motion.div 
             className="emerging-card-box"
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5 }}
           >
             <div>
-              <div className="emerging-tag">{t('card1Tag')}</div>
+              <span className="emerging-tag">{t('card1Tag')}</span>
               <h2 className="emerging-title">{t('card1Title')}</h2>
-              <p className="text-secondary text-sm mb-6 leading-relaxed">
+              <p className="text-secondary text-sm mb-4 leading-relaxed">
                 {t('card1Desc')}
               </p>
+
+              {/* Customer Benefits & Key Features */}
+              <div className="emerging-benefits-list">
+                <div className="emerging-benefit-item">
+                  <CheckCircle2 size={16} className="emerging-benefit-icon" />
+                  <span>{t('card1Benefit1')}</span>
+                </div>
+                <div className="emerging-benefit-item">
+                  <CheckCircle2 size={16} className="emerging-benefit-icon" />
+                  <span>{t('card1Benefit2')}</span>
+                </div>
+                <div className="emerging-benefit-item">
+                  <CheckCircle2 size={16} className="emerging-benefit-icon" />
+                  <span>{t('card1Benefit3')}</span>
+                </div>
+              </div>
             </div>
-            
-            {/* Professional Hospital Preview */}
+
             <div 
-              onClick={() => { switchRole('patient'); navigate('/patient/hospitals'); }}
-              className="cursor-pointer group"
-              style={{
-                background: '#F8FAFC',
-                borderRadius: '16px',
-                padding: '20px',
-                border: '1px solid #E2E8F0',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '12px'
+              className="emerging-card-preview group cursor-pointer"
+              onClick={() => {
+                switchRole('patient');
+                navigate('/patient/hospitals');
               }}
             >
-              <div className="flex justify-between items-center text-xs text-secondary font-semibold pb-2 border-b border-slate-200">
-                <span>{t('card1District')}</span>
-                <span className="text-primary font-bold">{t('card1Badge')}</span>
+              <div className="flex justify-between items-center text-xs pb-3 border-b border-slate-200/80">
+                <span className="font-semibold text-slate-800">{t('card1District')}</span>
+                <span className="text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                  {t('card1Badge')}
+                </span>
               </div>
 
-              <div className="space-y-2">
-                <div className="p-2.5 bg-white rounded-xl border border-slate-200 flex justify-between items-center text-xs">
-                  <div>
-                    <div className="font-bold text-slate-800">{t('card1Hosp1Name')}</div>
-                    <div className="text-[11px] text-slate-500">{t('card1Hosp1Desc')}</div>
-                  </div>
-                  <span className="badge badge-success text-[11px]">{t('card1GovtFee')}</span>
+              <div className="flex justify-between items-center py-2.5 border-b border-slate-200/50 text-xs">
+                <div>
+                  <div className="font-semibold text-slate-800">{t('card1Hosp1Name')}</div>
+                  <div className="text-slate-500 text-[11px]">{t('card1Hosp1Desc')}</div>
                 </div>
-
-                <div className="p-2.5 bg-white rounded-xl border border-slate-200 flex justify-between items-center text-xs">
-                  <div>
-                    <div className="font-bold text-slate-800">{t('card1Hosp2Name')}</div>
-                    <div className="text-[11px] text-slate-500">{t('card1Hosp2Desc')}</div>
-                  </div>
-                  <span className="badge badge-success text-[11px]">{t('card1GovtFee')}</span>
-                </div>
+                <span className="badge badge-success text-[11px]">{t('card1GovtFee')}</span>
               </div>
 
-              <div className="text-xs text-primary font-bold flex items-center justify-between pt-1 group-hover:translate-x-1 transition">
+              <div className="flex justify-between items-center py-2.5 text-xs">
+                <div>
+                  <div className="font-semibold text-slate-800">{t('card1Hosp2Name')}</div>
+                  <div className="text-slate-500 text-[11px]">{t('card1Hosp2Desc')}</div>
+                </div>
+                <span className="badge badge-success text-[11px]">{t('card1GovtFee')}</span>
+              </div>
+
+              <div className="pt-2.5 border-t border-slate-200/80 flex items-center justify-between text-xs font-semibold text-emerald-700 group-hover:text-emerald-800">
                 <span>{t('card1Explore')}</span>
-                <span>→</span>
+                <ArrowRight size={14} className="group-hover:translate-x-1 transition" />
               </div>
             </div>
           </motion.div>
 
-          {/* Card 2: Patient Services & Emergency Support */}
+          {/* Card 2: Queues, Triage & Emergency */}
           <motion.div 
             className="emerging-card-box"
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.15 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
           >
             <div>
-              <div className="emerging-tag">{t('card2Tag')}</div>
+              <span className="emerging-tag">{t('card2Tag')}</span>
               <h2 className="emerging-title">{t('card2Title')}</h2>
-              <p className="text-secondary text-sm mb-6 leading-relaxed">
+              <p className="text-secondary text-sm mb-4 leading-relaxed">
                 {t('card2Desc')}
               </p>
+
+              {/* Customer Benefits & Key Features */}
+              <div className="emerging-benefits-list">
+                <div className="emerging-benefit-item">
+                  <CheckCircle2 size={16} className="emerging-benefit-icon" />
+                  <span>{t('card2Benefit1')}</span>
+                </div>
+                <div className="emerging-benefit-item">
+                  <CheckCircle2 size={16} className="emerging-benefit-icon" />
+                  <span>{t('card2Benefit2')}</span>
+                </div>
+                <div className="emerging-benefit-item">
+                  <CheckCircle2 size={16} className="emerging-benefit-icon" />
+                  <span>{t('card2Benefit3')}</span>
+                </div>
+              </div>
             </div>
 
-            {/* Professional Outpatient & Emergency Preview */}
             <div 
-              onClick={() => { switchRole('patient'); navigate('/patient'); }}
-              className="cursor-pointer group"
-              style={{
-                background: '#0F172A',
-                borderRadius: '16px',
-                padding: '20px',
-                color: 'white',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '12px'
+              className="emerging-dark-preview group cursor-pointer"
+              onClick={() => {
+                switchRole('patient');
+                navigate('/patient/queue');
               }}
             >
-              <div className="flex justify-between items-center text-xs pb-2 border-b border-slate-800">
+              <div className="flex justify-between items-center text-xs pb-2.5 border-b border-slate-800">
                 <div className="flex items-center gap-2">
                   <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981' }}></span>
-                  <span className="text-slate-400 font-medium">{t('card2QueueStatus')}</span>
+                  <span className="text-slate-300 font-medium">{t('card2QueueStatus')}</span>
                 </div>
                 <span className="text-emerald-400 font-semibold text-[11px]">{t('card2ActiveHours')}</span>
               </div>
 
-              <div className="p-3 bg-slate-800/80 rounded-xl border border-slate-700 flex justify-between items-center text-xs">
+              <div className="p-3 bg-slate-800/90 rounded-xl border border-slate-700/80 flex justify-between items-center text-xs">
                 <div>
                   <div className="font-bold text-white text-sm">{t('card2TokenNumber')}</div>
                   <div className="text-slate-400 text-[11px]">{t('card2TokenWait')}</div>
@@ -301,9 +319,10 @@ export default function LandingPage() {
               </div>
 
               <div 
-                className="p-2.5 bg-red-950/60 rounded-xl border border-red-900/60 flex justify-between items-center text-xs text-red-200"
+                className="p-2.5 bg-red-950/60 rounded-xl border border-red-900/60 flex justify-between items-center text-xs text-red-200 hover:bg-red-900/50 transition"
                 onClick={(e) => {
                   e.stopPropagation();
+                  switchRole('patient');
                   navigate('/patient/emergency');
                 }}
               >
