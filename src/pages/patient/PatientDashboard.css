@@ -1,0 +1,714 @@
+/* ===================================================
+   DrDoctor-Inspired Patient Dashboard Styling
+   Bold typography, contained hero card, dark triage room,
+   elevated stat band, and rounded-card components.
+   =================================================== */
+
+.patient-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+}
+
+/* --- DrDoctor Contained Hero Section --- */
+.dashboard-hero-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%);
+  padding: 44px 48px;
+  color: #ffffff;
+  box-shadow: 0 10px 30px rgba(5, 150, 105, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.hero-painterly-backdrop {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.28) 0%, transparent 50%),
+                    radial-gradient(circle at 10% 80%, rgba(20, 184, 166, 0.18) 0%, transparent 45%),
+                    radial-gradient(circle at 50% 50%, rgba(52, 211, 153, 0.15) 0%, transparent 60%);
+  filter: blur(30px);
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 40px;
+  align-items: center;
+}
+
+.hero-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #a7f3d0;
+  margin-bottom: 2px;
+}
+
+.eyebrow-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 10px #34d399;
+  animation: pulse 2s infinite;
+}
+
+.hero-title {
+  font-size: clamp(32px, 3.8vw, 50px);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+.hero-subtext {
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(241, 245, 249, 0.78);
+  max-width: 540px;
+  margin: 4px 0 8px;
+}
+
+.hero-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+}
+
+/* --- Floating Digital Triage Room Card --- */
+.hero-triage-card {
+  background: rgba(22, 30, 52, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hero-triage-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.45);
+}
+
+.triage-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.triage-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.14);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.status-pulsing-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 8px #34d399;
+  animation: pulse 1.8s infinite;
+}
+
+.triage-token-chip {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #c4b5fd;
+  background: rgba(124, 58, 237, 0.22);
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  padding: 3px 9px;
+  border-radius: 9999px;
+}
+
+.triage-doctor-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.triage-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #059669, #047857);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35);
+  flex-shrink: 0;
+}
+
+.triage-doctor-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.triage-specialty {
+  font-size: 12px;
+  color: rgba(226, 232, 240, 0.72);
+  margin: 2px 0 0;
+}
+
+.triage-details-box {
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.triage-detail-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(241, 245, 249, 0.85);
+}
+
+.triage-cta-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px 18px;
+  border-radius: 9999px;
+  background: var(--brand-purple-600);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+}
+
+.triage-cta-btn:hover {
+  background: var(--brand-purple-700);
+  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.45);
+  transform: translateY(-1px);
+}
+
+/* --- Elevated Stat Band / 4-Metric Grid --- */
+.stat-band-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.stat-metric-card {
+  background: #ffffff;
+  border: 1px solid var(--neutral-200);
+  border-radius: 20px;
+  padding: 24px 24px 22px;
+  box-shadow: var(--shadow-card);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+}
+
+.stat-metric-card.accent-purple::before { background: var(--brand-purple-600); }
+.stat-metric-card.accent-amber::before { background: #f59e0b; }
+.stat-metric-card.accent-teal::before { background: #14b8a6; }
+.stat-metric-card.accent-emerald::before { background: #22c55e; }
+
+.stat-metric-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card-hover);
+  border-color: #cbd5e1;
+}
+
+.stat-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.stat-metric-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--neutral-600);
+}
+
+.stat-icon-wrapper {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stat-icon-wrapper.purple { background: var(--brand-purple-50); color: var(--brand-purple-600); }
+.stat-icon-wrapper.amber { background: #fef3c7; color: #d97706; }
+.stat-icon-wrapper.teal { background: #ccfbf1; color: #0d9488; }
+.stat-icon-wrapper.emerald { background: #dcfce7; color: #16a34a; }
+
+.stat-metric-value {
+  font-size: 38px;
+  font-weight: 800;
+  color: var(--neutral-900);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  margin-bottom: 10px;
+}
+
+.stat-metric-value.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-metric-footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.stat-status-chip {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+}
+
+.stat-status-chip.success {
+  background: #dcfce7;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+
+.stat-status-chip.warning {
+  background: #fef3c7;
+  color: #b45309;
+  border-color: #fde68a;
+}
+
+.stat-status-chip.teal {
+  background: #ccfbf1;
+  color: #0f766e;
+  border-color: #99f6e4;
+}
+
+.stat-subtext {
+  font-size: 12px;
+  color: var(--neutral-600);
+  font-weight: 500;
+}
+
+/* --- Quick Actions Section --- */
+.quick-actions-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section-header-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.section-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brand-purple-600);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.section-heading {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--neutral-900);
+  margin: 0;
+  letter-spacing: -0.015em;
+}
+
+.quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+}
+
+.action-card {
+  background: #ffffff;
+  border: 1px solid var(--neutral-200);
+  border-radius: 20px;
+  padding: 22px 18px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  cursor: pointer;
+  position: relative;
+  transition: all var(--transition-base);
+}
+
+.action-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary-200);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.action-card:hover .action-arrow {
+  transform: translateX(3px);
+  color: var(--brand-purple-600);
+}
+
+.action-icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.action-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.action-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--neutral-900);
+  margin: 0;
+}
+
+.action-desc {
+  font-size: 12px;
+  color: var(--neutral-600);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.action-arrow {
+  margin-top: auto;
+  color: #94a3b8;
+  transition: all var(--transition-fast);
+}
+
+/* --- Double Cards (Appointment & Crowd) --- */
+.dashboard-double-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.dashboard-card {
+  border-radius: 20px;
+  padding: 28px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--neutral-900);
+  margin: 0;
+}
+
+.btn-ghost-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brand-purple-600);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  transition: all var(--transition-fast);
+}
+
+.btn-ghost-link:hover {
+  background: var(--brand-purple-50);
+  color: var(--brand-purple-700);
+}
+
+.appointment-elevated-card {
+  background: var(--neutral-50);
+  border: 1px solid var(--neutral-200);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.appointment-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.doctor-badge-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #059669, #047857);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.doctor-meta {
+  flex: 1;
+}
+
+.doctor-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--neutral-900);
+}
+
+.doctor-dept {
+  font-size: 13px;
+  color: var(--neutral-600);
+  margin-top: 2px;
+}
+
+.drdoctor-pill-confirmed {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.appointment-footer-pills {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pill-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--neutral-600);
+  background: #ffffff;
+  border: 1px solid var(--neutral-200);
+  padding: 6px 12px;
+  border-radius: 9999px;
+}
+
+/* --- Crowd Telemetry List --- */
+.crowd-list-drdoctor {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.crowd-item-drdoctor {
+  display: grid;
+  grid-template-columns: 160px 1fr 45px;
+  align-items: center;
+  gap: 14px;
+}
+
+.crowd-item-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.crowd-dept-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--neutral-900);
+}
+
+.crowd-badge-drdoctor {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 6px;
+  border-radius: 9999px;
+}
+
+.crowd-badge-drdoctor.high { background: #fee2e2; color: #b91c1c; }
+.crowd-badge-drdoctor.medium { background: #fef3c7; color: #b45309; }
+.crowd-badge-drdoctor.low { background: #dcfce7; color: #15803d; }
+
+.crowd-bar-track {
+  height: 8px;
+  background: var(--neutral-100);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.crowd-bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.6s ease;
+}
+
+.crowd-bar-fill.high { background: linear-gradient(90deg, #f87171, #ef4444); }
+.crowd-bar-fill.medium { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+.crowd-bar-fill.low { background: linear-gradient(90deg, #34d399, #10b981); }
+
+.crowd-percent {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--neutral-900);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Disclaimer Pill --- */
+.demo-disclaimer-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--neutral-100);
+  border: 1px solid var(--neutral-200);
+  border-radius: 9999px;
+  padding: 10px 20px;
+  font-size: 12px;
+  color: var(--neutral-600);
+}
+
+.demo-disclaimer-pill .info-icon {
+  color: var(--brand-purple-600);
+  font-weight: bold;
+}
+
+/* --- Responsive Adaptations --- */
+@media (max-width: 1100px) {
+  .hero-content {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-band-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .quick-actions-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .dashboard-double-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-hero-card {
+    padding: 28px 24px;
+    border-radius: 20px;
+  }
+
+  .stat-band-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .crowd-item-drdoctor {
+    grid-template-columns: 120px 1fr 40px;
+  }
+}

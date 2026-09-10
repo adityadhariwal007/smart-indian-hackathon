@@ -1,0 +1,68 @@
+.custom-cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background-color: var(--primary);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: difference;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.custom-cursor-dot.hovering {
+  opacity: 0;
+}
+
+.custom-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--primary);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  mix-blend-mode: difference;
+  transition: width 0.3s, height 0.3s, background-color 0.3s, border-color 0.3s;
+}
+
+.custom-cursor-ring.hovering {
+  width: 60px;
+  height: 60px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: transparent;
+  backdrop-filter: blur(2px);
+}
+
+.custom-cursor-ring.has-text {
+  width: 80px;
+  height: 80px;
+  background-color: var(--primary);
+  border-color: var(--primary);
+  mix-blend-mode: normal;
+}
+
+.custom-cursor-ring .cursor-text {
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0;
+  animation: fadeInText 0.3s forwards;
+}
+
+@keyframes fadeInText {
+  to { opacity: 1; }
+}
+
+@media (pointer: fine) {
+  /* Cursor effect removed */
+}
