@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import {
   Building2, Calendar, Clock, Ticket, ArrowRight, MapPin,
   Star, ShieldCheck, AlertTriangle, Search, CheckCircle2,
-  ChevronRight, Phone, ShieldAlert, Bot, Truck
+  ChevronRight, Phone
 } from 'lucide-react';
 import hospitals, { getCrowdLabel, getCrowdColor } from '../../data/hospitals';
 import BookAppointmentModal from '../../components/patient/BookAppointmentModal';
@@ -73,28 +73,6 @@ export default function PatientDashboard() {
             {!hasActiveBooking && (
               <div style={{ display: 'flex', gap: '12px', marginTop: '14px', flexWrap: 'wrap' }}>
                 <button
-                  className="btn"
-                  style={{
-                    borderRadius: '9999px',
-                    padding: '12px 24px',
-                    fontWeight: 700,
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    background: '#059669',
-                    color: '#ffffff',
-                    border: '1px solid rgba(255, 255, 255, 0.25)',
-                    boxShadow: '0 4px 14px rgba(5, 150, 105, 0.45)'
-                  }}
-                  onClick={() => setIsAiChatOpen(true)}
-                >
-                  <Bot size={16} />
-                  <span>🤖 Talk to HealthFlow AI</span>
-                </button>
-
-                <VideoConsultationTrigger compact />
-
-                <button
                   className="btn btn-primary"
                   style={{ borderRadius: '9999px', padding: '12px 24px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                   onClick={() => navigate('/patient/hospitals')}
@@ -121,46 +99,6 @@ export default function PatientDashboard() {
                   <span className="emergency-live-pulse" />
                   <AlertTriangle size={16} />
                   <span>Emergency SOS</span>
-                </button>
-
-                <button
-                  className="btn"
-                  style={{
-                    borderRadius: '9999px',
-                    padding: '12px 22px',
-                    fontWeight: 600,
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    background: 'rgba(255, 255, 255, 0.12)',
-                    color: '#ffffff',
-                    border: '1px solid rgba(255, 255, 255, 0.25)',
-                    backdropFilter: 'blur(8px)'
-                  }}
-                  onClick={() => navigate('/patient/complaints')}
-                >
-                  <ShieldAlert size={16} />
-                  <span>Grievance Portal</span>
-                </button>
-
-                <button
-                  className="btn"
-                  style={{
-                    borderRadius: '9999px',
-                    padding: '12px 22px',
-                    fontWeight: 700,
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    background: '#0F172A',
-                    color: '#ffffff',
-                    border: '1px solid rgba(255, 255, 255, 0.25)',
-                    boxShadow: '0 4px 14px rgba(15, 23, 42, 0.4)'
-                  }}
-                  onClick={() => navigate('/patient/ambulance')}
-                >
-                  <Truck size={16} className="text-emerald-400" />
-                  <span>Ambulance Tracking</span>
                 </button>
               </div>
             )}
