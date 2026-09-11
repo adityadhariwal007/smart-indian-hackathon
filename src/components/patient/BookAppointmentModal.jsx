@@ -83,6 +83,11 @@ export default function BookAppointmentModal({ hospital: initialHospital, presel
     const assignedToken = `A-${tokenNum}`;
 
     setTimeout(() => {
+      const isOnline = bookingData.consultationMode === 'online';
+      if (typeof localStorage !== 'undefined' && isOnline) {
+        localStorage.setItem('healthflow_opted_online', 'true');
+      }
+
       // Save patient registration/details
       login('patient', {
         name: patientData.name || 'Aditya Kumar',
@@ -92,6 +97,8 @@ export default function BookAppointmentModal({ hospital: initialHospital, presel
         preferredSpecialty: bookingData.specialty,
         bookedSlot: bookingData.timeSlot,
         consultationType: bookingData.consultationType,
+        consultationMode: bookingData.consultationMode,
+        isOnlineConsultation: isOnline,
         token: assignedToken,
       });
 

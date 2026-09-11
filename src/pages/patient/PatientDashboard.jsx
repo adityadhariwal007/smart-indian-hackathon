@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import {
   Building2, Calendar, Clock, Ticket, ArrowRight, MapPin,
   Star, ShieldCheck, AlertTriangle, Search, CheckCircle2,
-  ChevronRight, Phone
+  ChevronRight, Phone, Video
 } from 'lucide-react';
 import hospitals, { getCrowdLabel, getCrowdColor } from '../../data/hospitals';
 import BookAppointmentModal from '../../components/patient/BookAppointmentModal';
@@ -36,6 +36,27 @@ export default function PatientDashboard() {
 
   // Check if patient has completed a booking
   const hasActiveBooking = !user?.isGuest && user?.bookedSlot;
+
+  // Track if patient has opted for online consultation
+  const [optedOnline, setOptedOnline] = useState(() => {
+    if (typeof localStorage !== 'undefined') {
+      return localStorage.getItem('healthflow_opted_online') === 'true';
+    }
+    return false;
+  });
+
+  const hasOptedOnline = 
+    optedOnline || 
+    user?.consultationMode === 'online' || 
+    user?.isOnlineConsultation ||
+    (user?.consultationType && user.consultationType.toLowerCase().includes('online'));
+
+  const handleOptForOnline = (value) => {
+    setOptedOnline(value);
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('healthflow_opted_online', value ? 'true' : 'false');
+    }
+  };
 
   return (
     <div className="patient-dashboard animate-fade-in">
@@ -149,8 +170,73 @@ export default function PatientDashboard() {
         </div>
       </section>
 
-      {/* Instant Video Teleconsultation Card */}
-      <VideoConsultationTrigger />
+      {/* Video Consultation (Loaded after patient opts for online consultation) */}
+      {hasOptedOnline ? (
+        <VideoConsultationTrigger onCancel={() => handleOptForOnline(false)} />
+      ) : (
+        <div 
+          className="card"
+          style={{
+            background: '#ffffff',
+            borderRadius: '18px',
+            border: '1.5px solid #e2e8f0',
+            padding: '16px 20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '14px',
+            flexWrap: 'wrap',
+            boxShadow: '0 4px 14px -4px rgba(0, 0, 0, 0.05)',
+            marginBottom: '4px'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '12px',
+              background: '#ecfdf5',
+              color: '#059669',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0
+            }}>
+              <Video size={20} />
+            </div>
+            <div>
+              <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: '#0f172a' }}>
+                Prefer an Online Doctor Consultation?
+              </h4>
+              <p style={{ margin: '2px 0 0', fontSize: '12px', color: '#64748b' }}>
+                Connect with on-duty specialists remotely without visiting the hospital OPD.
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={() => handleOptForOnline(true)}
+            style={{
+              background: '#059669',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '9999px',
+              padding: '9px 18px',
+              fontSize: '13px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: '0 2px 8px rgba(5, 150, 105, 0.3)',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            <Video size={14} />
+            <span>Opt for Online Consultation</span>
+          </button>
+        </div>
+      )}
 
       {/* Patiala Patient Location Request & Bar */}
       <PatialaLocationBar />

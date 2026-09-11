@@ -25,7 +25,7 @@ const AVAILABLE_DOCTORS = [
   },
 ];
 
-export default function VideoConsultationTrigger({ compact = false }) {
+export default function VideoConsultationTrigger({ compact = false, onCancel = null }) {
   const { user } = useAuth();
   const [selectedDoctorId, setSelectedDoctorId] = useState('aditya');
   const [isCallingModalOpen, setIsCallingModalOpen] = useState(false);
@@ -222,7 +222,7 @@ export default function VideoConsultationTrigger({ compact = false }) {
               </div>
             </div>
 
-            {/* Start Call Button */}
+            {/* Join Call Button */}
             <button
               onClick={handleStartCall}
               style={{
@@ -242,8 +242,26 @@ export default function VideoConsultationTrigger({ compact = false }) {
               }}
             >
               <Video size={16} />
-              <span>Start Video Consultation</span>
+              <span>Join Video Consultation</span>
             </button>
+
+            {onCancel && (
+              <button
+                onClick={onCancel}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: '#64748b',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                  padding: '6px 8px',
+                }}
+              >
+                Switch to In-Person OPD
+              </button>
+            )}
           </div>
         </div>
       </div>
