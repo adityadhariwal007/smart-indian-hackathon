@@ -17,6 +17,7 @@ const navGroups = {
         { path: '/patient', icon: LayoutDashboard, label: 'Overview', end: true },
         { path: '/patient/portal', icon: ShieldCheck, label: 'Health ID Portal' },
         { path: '/patient/hospitals', icon: Building2, label: 'Find Hospital' },
+        { path: '/patient/doctors', icon: Stethoscope, label: 'Find Best Doctors' },
         { path: '/patient/appointments', icon: Calendar, label: 'Appointments' },
         { path: '/patient/complaints', icon: ShieldAlert, label: 'Grievances' },
         { path: '/patient/emergency', icon: Ambulance, label: 'Emergency SOS' },
