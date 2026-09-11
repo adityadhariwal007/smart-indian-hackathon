@@ -230,9 +230,9 @@ export default function LandingPage() {
               className="hero-book-btn"
               onClick={() => {
                 switchRole('patient');
-                navigate('/patient/portal');
+                navigate('/patient');
               }}
-              title="Open Patient Portal"
+              title="Open Patient Overview"
             >
               {t('bookAppointment')}
             </button>
